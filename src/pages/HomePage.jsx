@@ -21,20 +21,28 @@ function HomePage() {
             date: "2025-02-23"
         }
     ];
+
     return (
         <>
             <Navbar />
-            <Box paddingTop={{ xs: "20px", sm: "70px", md: "70px" }} marginLeft="20px" marginRight="20px">
-                {articles.map(article => (
-                    <PostCard
-                        key={article.id}
-                        category={article.category}
-                        title={article.title}
-                        brief_content={article.brief_content}
-                        author={article.author}
-                        date={article.date}
-                    />
-                ))}
+            <Box
+                sx={{ backgroundColor: '#efefef', minHeight: '100vh', display: 'flex', flexDirection: 'column', marginLeft: '-10px', marginRight: '-10px' }} // Set background color to gray, ensure full height, and set left and right margins to 0px
+            >
+                <Box
+                    paddingTop={{ xs: "20px", sm: "70px", md: "70px" }}
+                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                >
+                    {articles.map(article => (
+                        <PostCard
+                            key={article.id}
+                            category={article.category}
+                            title={article.title}
+                            brief_content={article.brief_content}
+                            author={article.author}
+                            date={article.date}
+                        />
+                    ))}
+                </Box>
             </Box>
         </>
     );
