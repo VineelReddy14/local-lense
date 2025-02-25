@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "category": "Politics",
+    "title": "Oklahoma Legislature Approves New Budget Plan",
+    "brief_content": "The Oklahoma Legislature has passed a new budget plan, focusing on education and infrastructure improvements.",
+    "author": "John Carter",
+    "date": "2025-02-24"
+  },
+  {
+    "id": 2,
+    "category": "Weather",
+    "title": "Severe Storms Expected Across Oklahoma This Week",
+    "brief_content": "Meteorologists warn of heavy storms and possible tornado activity in central Oklahoma.",
+    "author": "Sarah Anderson",
+    "date": "2025-02-23"
+  },
+  {
+    "id": 3,
+    "category": "Sports",
+    "title": "Oklahoma Sooners Dominate in Latest College Football Game",
+    "brief_content": "The Oklahoma Sooners secured a decisive victory against their rivals, boosting their rankings.",
+    "author": "Mike Reynolds",
+    "date": "2025-02-22"
+  },
+  {
+    "id": 4,
+    "category": "Crime",
+    "title": "Police Investigating Rise in Auto Thefts in Tulsa",
+    "brief_content": "Tulsa authorities report an increase in vehicle thefts and urge residents to take precautions.",
+    "author": "Lisa Brown",
+    "date": "2025-02-21"
+  },
+  {
+    "id": 5,
+    "category": "Business",
+    "title": "Oklahoma Oil Prices Surge Amid Global Market Changes",
+    "brief_content": "Recent developments in the energy sector have led to a significant increase in oil prices across Oklahoma.",
+    "author": "James Wilson",
+    "date": "2025-02-20"
+  },
+  {
+    "id": 6,
+    "category": "Education",
+    "title": "Oklahoma Schools to Receive Additional Funding for STEM Programs",
+    "brief_content": "State officials announced new funding initiatives to boost STEM education across Oklahoma.",
+    "author": "Emily Davis",
+    "date": "2025-02-19"
+  },
+  {
+    "id": 7,
+    "category": "Health",
+    "title": "Oklahoma Hospitals Report Decline in COVID-19 Cases",
+    "brief_content": "Medical professionals in Oklahoma report a steady decline in COVID-19 hospitalizations and cases.",
+    "author": "Robert Harris",
+    "date": "2025-02-18"
+  },
+  {
+    "id": 8,
+    "category": "Entertainment",
+    "title": "Oklahoma Music Festival to Feature Top Country Artists",
+    "brief_content": "The upcoming Oklahoma Music Festival will host some of the biggest names in country music.",
+    "author": "Jessica Lee",
+    "date": "2025-02-17"
+  },
+  {
+    "id": 9,
+    "category": "Technology",
+    "title": "Oklahoma Tech Startup Gains National Recognition",
+    "brief_content": "An emerging Oklahoma-based tech company has been recognized for its innovative AI solutions.",
+    "author": "Daniel Martinez",
+    "date": "2025-02-16"
+  },
+  {
+    "id": 10,
+    "category": "Environment",
+    "title": "Oklahoma Wildlife Conservation Efforts Yield Positive Results",
+    "brief_content": "Recent conservation efforts in Oklahoma have led to an increase in native wildlife populations.",
+    "author": "Olivia Scott",
+    "date": "2025-02-15"
+  }
+]
