@@ -33,7 +33,7 @@ export default function PostCard({ image, category, title, brief_content, author
       <Grid container spacing={2}>
         {/* Image Section */}
         <Grid item>
-          <ButtonBase sx={{ width: 140, height: 100 }}>
+          <ButtonBase sx={{ width: 170, height: 150 }}>
             <Img alt="news-thumbnail" src={image || logo} />
           </ButtonBase>
         </Grid>
