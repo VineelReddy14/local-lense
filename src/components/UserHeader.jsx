@@ -3,14 +3,15 @@ import { Box, Typography, Avatar, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 /**
- * Displays the user's profile header with avatar, name, stats, and "Create a post" button.
+ * User profile info with "Create a post" button.
  * Props:
  * - name: string
  * - postCount: number
  * - followers: number
  * - following: number
+ * - onCreatePostClick: function (to trigger modal)
  */
-function UserHeader({ name, postCount, followers, following }) {
+function UserHeader({ name, postCount, followers, following, onCreatePostClick }) {
   return (
     <Box
       className="flex justify-between items-center w-full border-b border-gray-300"
@@ -22,12 +23,12 @@ function UserHeader({ name, postCount, followers, following }) {
         flexWrap: "wrap",
       }}
     >
-      {/* Left side: Avatar + Name + Stats */}
+      {/* Left: Avatar + Stats */}
       <Box className="flex items-center space-x-4">
         <Avatar
           sx={{ width: 60, height: 60 }}
           alt={name}
-          src="/default-avatar.png" // Use a real image path if needed
+          src="/default-avatar.png"
         />
         <Box>
           <Typography fontWeight="bold">{name}</Typography>
@@ -39,8 +40,9 @@ function UserHeader({ name, postCount, followers, following }) {
         </Box>
       </Box>
 
-      {/* Right side: Create a Post button */}
+      {/* Right: Create Post Button */}
       <Button
+        onClick={onCreatePostClick} // 💥 trigger modal
         variant="outlined"
         startIcon={<AddIcon />}
         sx={{

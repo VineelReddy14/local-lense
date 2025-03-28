@@ -41,14 +41,6 @@ function LocalPostCard({ post, canEdit }) {
             </Typography>
           </Box>
         </Box>
-
-        {!canEdit && (
-          <Tooltip title="Save">
-            <IconButton>
-              <BookmarkBorderIcon />
-            </IconButton>
-          </Tooltip>
-        )}
       </Box>
 
       {/* Title */}
@@ -94,6 +86,12 @@ function LocalPostCard({ post, canEdit }) {
                 <ChatBubbleOutlineIcon fontSize="small" />
                 <span>{post.comments}</span>
               </Box>
+            </Tooltip>
+            {/* Save */}
+            <Tooltip title="Save">
+                <IconButton>
+                <BookmarkBorderIcon fontSize="small" />
+                </IconButton>
             </Tooltip>
             <Tooltip title="Share">
               <IconButton>

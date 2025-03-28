@@ -4,13 +4,14 @@ import Navbar from "../components/Navbar";
 import PostTabs from "../components/PostTabs";
 import UserHeader from "../components/UserHeader";
 import LocalPostCard from "../components/LocalPostCard";
-import localPostsData from "../data/localPostsData.json"; // Post data
+import localPostsData from "../data/localPostsData.json";
+import CreatePostModal from "../components/CreatePostModal";
 
 function PostPage() {
+  const [showModal, setShowModal] = useState(false);
   const [currentTab, setCurrentTab] = useState("Feed");
-  const currentUser = "Teddy Diallo"; // Replace later with dynamic auth
+  const currentUser = "Teddy Diallo";
 
-  // Flatten posts and attach user metadata
   const allPosts = localPostsData.flatMap((user) =>
     user.posts.map((post) => ({
       ...post,
@@ -20,13 +21,11 @@ function PostPage() {
     }))
   );
 
-  // Filter visible posts based on tab
   const visiblePosts =
     currentTab === "Feed"
       ? allPosts
       : allPosts.filter((post) => post.author === currentUser);
 
-  // Get current user info for UserHeader
   const currentUserData = localPostsData.find(
     (u) => u.user === currentUser
   );
@@ -52,7 +51,6 @@ function PostPage() {
             alignItems: "center",
           }}
         >
-          {/* White container holding all post content */}
           <Box
             sx={{
               backgroundColor: "white",
@@ -63,21 +61,21 @@ function PostPage() {
               overflow: "hidden",
             }}
           >
-            {/* Top Tabs */}
+            {/* Tabs */}
             <PostTabs currentTab={currentTab} onChange={setCurrentTab} />
 
-            {/* Profile Header (only for Your Posts) */}
+            {/* Profile Header with modal trigger passed down */}
             <UserHeader
               name={currentUser}
               postCount={currentUserData?.posts.length || 0}
               followers={182}
               following={256}
+              onCreatePostClick={() => setShowModal(true)} // 🔥 Here!
             />
 
-            {/* Separator line */}
             <Box sx={{ borderBottom: "1px solid #ddd" }} />
 
-            {/* Render posts */}
+            {/* Posts */}
             {visiblePosts.map((post) => (
               <LocalPostCard
                 key={post.id}
@@ -88,6 +86,9 @@ function PostPage() {
           </Box>
         </Box>
       </Box>
+
+      {/* 🔥 Create Post Modal */}
+      <CreatePostModal open={showModal} onClose={() => setShowModal(false)} />
     </>
   );
 }
