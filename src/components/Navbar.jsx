@@ -42,7 +42,7 @@ function Navbar() {
                         backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
                     }}
                 >
-                    Local Posts
+                    Local-Posts
                 </Button>
 
                 <Box sx={{ flexGrow: 1 }} />
