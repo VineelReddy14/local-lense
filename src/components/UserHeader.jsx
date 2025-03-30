@@ -42,7 +42,7 @@ function UserHeader({ name, postCount, followers, following, onCreatePostClick }
 
       {/* Right: Create Post Button */}
       <Button
-        onClick={onCreatePostClick} // 💥 trigger modal
+        onClick={onCreatePostClick} // trigger modal
         variant="outlined"
         startIcon={<AddIcon />}
         sx={{

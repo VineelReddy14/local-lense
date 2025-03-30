@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Box,
@@ -26,65 +26,125 @@ const modalStyle = {
   p: 4,
 };
 
-function CreatePostModal({ open, onClose }) {
+function CreatePostModal({ open, onClose, onSubmit }) {
+  const [category, setCategory] = useState("General");
+  const [caption, setCaption] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
+
+  const handlePost = () => {
+    if (!caption.trim() || !description.trim()) return;
+
+    const newPost = {
+      id: Date.now(),
+      category,
+      title: caption,
+      content: description,
+      image,
+      date: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+      likes: 0,
+      comments: 0,
+    };
+
+    onSubmit(newPost);
+    // Clear form
+    setCategory("General");
+    setCaption("");
+    setDescription("");
+    setImage("");
+    onClose();
+  };
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
-        {/* Close Button */}
-        <IconButton
-          onClick={onClose}
-          sx={{ position: "absolute", top: 8, right: 8 }}
-        >
+        <IconButton onClick={onClose} sx={{ position: "absolute", top: 8, right: 8 }}>
           <CloseIcon />
         </IconButton>
 
-        {/* Title */}
         <Typography variant="h5" fontWeight="bold" mb={2}>
           Create A Post
         </Typography>
 
-        {/* Post Category */}
         <Typography fontWeight="500" mb={0.5}>Post category:</Typography>
         <TextField
           fullWidth
           select
-          defaultValue="General"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
           size="small"
           sx={{ mb: 2 }}
         >
           {categoryOptions.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
+            <MenuItem key={option} value={option}>{option}</MenuItem>
           ))}
         </TextField>
 
-        {/* Caption */}
         <Typography fontWeight="500" mb={0.5}>Caption:</Typography>
-        <TextField fullWidth size="small" sx={{ mb: 2 }} />
+        <TextField
+          fullWidth
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          size="small"
+          sx={{ mb: 2 }}
+        />
 
-        {/* Description */}
         <Typography fontWeight="500" mb={0.5}>Description:</Typography>
-        <TextField fullWidth multiline rows={4} sx={{ mb: 2 }} />
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          sx={{ mb: 2 }}
+        />
 
-        {/* Upload area */}
-        <Box
-          sx={{
-            textAlign: "center",
-            border: "2px dashed #ccc",
-            borderRadius: "10px",
-            py: 4,
-            mb: 3,
-            cursor: "pointer",
-          }}
-        >
-          <UploadIcon sx={{ fontSize: 40, color: "#888" }} />
-          <Typography mt={1}>Upload image</Typography>
+{/* Upload Image */}
+<Box
+  sx={{
+    border: "2px dashed #ccc",
+    borderRadius: "10px",
+    py: 2,
+    px: 3,
+    mb: 3,
+    textAlign: "center",
+  }}
+>
+  <Typography fontWeight="bold" mb={1}>
+    Upload Image
+  </Typography>
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => setImage(reader.result);
+        reader.readAsDataURL(file);
+      }
+    }}
+  />
+
+  {/* Preview if image exists */}
+    {image && (
+        <Box mt={2}>
+        <img
+            src={image}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: 200, borderRadius: "8px" }}
+        />
         </Box>
+    )}
+    </Box>
 
-        {/* Submit */}
         <Box sx={{ textAlign: "right" }}>
           <Button
+            onClick={handlePost}
             variant="contained"
             sx={{
               backgroundColor: "#4caf50",

@@ -4,15 +4,16 @@ import Navbar from "../components/Navbar";
 import PostTabs from "../components/PostTabs";
 import UserHeader from "../components/UserHeader";
 import LocalPostCard from "../components/LocalPostCard";
-import localPostsData from "../data/localPostsData.json";
 import CreatePostModal from "../components/CreatePostModal";
+import localPostsData from "../data/localPostsData.json"; // initial data
 
 function PostPage() {
   const [showModal, setShowModal] = useState(false);
   const [currentTab, setCurrentTab] = useState("Feed");
-  const currentUser = "Teddy Diallo";
+  const currentUser = "Teddy Diallo"; // replace with auth later
 
-  const allPosts = localPostsData.flatMap((user) =>
+  // Prepare initial posts with user info attached
+  const allPostsFlattened = localPostsData.flatMap((user) =>
     user.posts.map((post) => ({
       ...post,
       author: user.user,
@@ -21,14 +22,30 @@ function PostPage() {
     }))
   );
 
+  // Manage posts state
+  const [posts, setPosts] = useState(allPostsFlattened);
+
+  // Filter visible posts
   const visiblePosts =
     currentTab === "Feed"
-      ? allPosts
-      : allPosts.filter((post) => post.author === currentUser);
+      ? posts
+      : posts.filter((post) => post.author === currentUser);
 
+  // Get current user info
   const currentUserData = localPostsData.find(
     (u) => u.user === currentUser
   );
+
+  // Add new post
+  const handleCreatePost = (newPost) => {
+    const completePost = {
+      ...newPost,
+      author: currentUser,
+      verified: true,
+      avatar: "/default-avatar.png", // default avatar
+    };
+    setPosts([completePost, ...posts]);
+  };
 
   return (
     <>
@@ -51,6 +68,7 @@ function PostPage() {
             alignItems: "center",
           }}
         >
+          {/* Main white content container */}
           <Box
             sx={{
               backgroundColor: "white",
@@ -64,18 +82,19 @@ function PostPage() {
             {/* Tabs */}
             <PostTabs currentTab={currentTab} onChange={setCurrentTab} />
 
-            {/* Profile Header with modal trigger passed down */}
+            {/* User Header */}
             <UserHeader
               name={currentUser}
               postCount={currentUserData?.posts.length || 0}
               followers={182}
               following={256}
-              onCreatePostClick={() => setShowModal(true)} // 🔥 Here!
+              onCreatePostClick={() => setShowModal(true)}
             />
 
+            {/* Separator */}
             <Box sx={{ borderBottom: "1px solid #ddd" }} />
 
-            {/* Posts */}
+            {/* Render all visible posts */}
             {visiblePosts.map((post) => (
               <LocalPostCard
                 key={post.id}
@@ -87,8 +106,12 @@ function PostPage() {
         </Box>
       </Box>
 
-      {/* 🔥 Create Post Modal */}
-      <CreatePostModal open={showModal} onClose={() => setShowModal(false)} />
+      {/* Modal to create new post */}
+      <CreatePostModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleCreatePost}
+      />
     </>
   );
 }

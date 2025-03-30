@@ -87,7 +87,6 @@ function LocalPostCard({ post, canEdit }) {
                 <span>{post.comments}</span>
               </Box>
             </Tooltip>
-            {/* Save */}
             <Tooltip title="Save">
                 <IconButton>
                 <BookmarkBorderIcon fontSize="small" />
