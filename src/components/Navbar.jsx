@@ -15,11 +15,7 @@ function Navbar() {
     return (
         <AppBar position="fixed" sx={{ backgroundColor: 'white', minHeight: "40px" }} className="shadow-md">
             <Toolbar className="flex items-center" sx={{ minHeight: "40px" }}>
-                {/* Hamburger Menu Icon */}
-                <IconButton edge="start" className="text-black">
-                    <MenuIcon />
-                </IconButton>
-
+            
                 <Button
                     component={Link}
                     to="/"
