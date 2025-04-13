@@ -12,6 +12,8 @@ function PostPage() {
   const [currentTab, setCurrentTab] = useState("Feed");
   const [postToEdit, setPostToEdit] = useState(null);
   const [savedPosts, setSavedPosts] = useState([]);
+  const [likedPostIds, setLikedPostIds] = useState([]);
+  const [commentsMap, setCommentsMap] = useState({});
 
   const currentUser = "Teddy Diallo"; // to replace with auth later
 
@@ -74,17 +76,47 @@ function PostPage() {
     }
   };
 
+  const handleToggleLike = (postId) => {
+    setLikedPostIds((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId]
+    );
+  
+    // Update like count in posts state
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              likes: likedPostIds.includes(postId)
+                ? post.likes - 1
+                : post.likes + 1,
+            }
+          : post
+      )
+    );
+  };
+
+  const handleAddComment = (postId, commentText) => {
+    if (!commentText.trim()) return;
+  
+    setCommentsMap((prev) => ({
+      ...prev,
+      [postId]: [...(prev[postId] || []), commentText],
+    }));
+  };
+
   return (
     <>
       <Navbar />
       <Box
         sx={{
-          backgroundColor: "#efefef",
+          backgroundColor: "#f7f7f7", // lighter and softer gray
           minHeight: "100vh",
           display: "flex",
-          flexDirection: "column",
-          marginLeft: "-10px",
-          marginRight: "-10px",
+          justifyContent: "center", // center content horizontally
+          paddingX: "16px"
         }}
       >
         <Box
@@ -129,6 +161,12 @@ function PostPage() {
                 canEdit={currentTab === "Your Posts"}
                 onDelete = {() => handleDeletePost(post.id)}
                 onEdit={() => setPostToEdit(post)}
+                onSaveToggle={() => handleToggleSave(post)}
+                isSaved={savedPosts.some((p) => p.id === post.id)} //For styling
+                isLiked={likedPostIds.includes(post.id)} 
+                onToggleLike={() => handleToggleLike(post.id)} 
+                comments={commentsMap[post.id] || []} 
+                onAddComment={(comment) => handleAddComment(post.id, comment)} 
               />
             ))}
           </Box>

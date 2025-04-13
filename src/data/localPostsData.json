@@ -10,7 +10,7 @@
           "category": "Infrastructure",
           "content": "Oklahoma drivers have been dealing with years of continuous construction on Interstate 35...",
           "image": "/highway.jpg",
-          "likes": 2500000,
+          "likes": 25,
           "comments": 973,
           "date": "Feb 8"
         }
@@ -27,7 +27,7 @@
           "category": "Technology",
           "content": "Will AI remain a tool for humans, or are we heading towards a future where it takes control?",
           "image": "/ai_tech.jpg",
-          "likes": 1800,
+          "likes": 18,
           "comments": 42,
           "date": "Feb 9"
         }

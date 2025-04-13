@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import {
   Box,
   Typography,
@@ -18,7 +19,12 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
  * - post: { title, category, content, image(s), author, date, likes, comments }
  * - canEdit: boolean (if true, show Edit/Delete instead of Like/Comment/Share)
  */
-function LocalPostCard({ post, canEdit , onDelete, onEdit}) {
+function LocalPostCard({ post, canEdit , onToggleLike, isLiked, onDelete, onEdit, 
+                         onSaveToggle, isSaved, comments, onAddComment}) {
+
+  const [showComments, setShowComments] = useState(false);
+  const [newComment, setNewComment] = useState("");
+
   return (
     <Box sx={{ padding: "20px", borderBottom: "1px solid #eee" }}>
       {/* Top section: Author info and bookmark */}
@@ -90,22 +96,39 @@ function LocalPostCard({ post, canEdit , onDelete, onEdit}) {
         ) : (
           <>
             <Tooltip title="Like">
-              <Box className="flex items-center space-x-1 text-sm">
-                <FavoriteBorderIcon fontSize="small" />
-                <span>{post.likes >= 1000000 ? `${(post.likes / 1000000).toFixed(1)}m` : post.likes}</span>
+              <Box
+                onClick={onToggleLike}
+                className="flex items-center space-x-1 text-sm cursor-pointer"
+                sx={{ color: isLiked ? "red" : "inherit" }}
+              >
+                <FavoriteBorderIcon
+                  fontSize="small"
+                  color={isLiked ? "error" : "inherit"}
+                />
+                <span>{post.likes}</span>
               </Box>
             </Tooltip>
+
             <Tooltip title="Comment">
-              <Box className="flex items-center space-x-1 text-sm">
+              <Box
+                onClick={() => setShowComments((prev) => !prev)}
+                className="flex items-center space-x-1 text-sm cursor-pointer"
+              >
                 <ChatBubbleOutlineIcon fontSize="small" />
-                <span>{post.comments}</span>
+                <span>{comments.length}</span>
               </Box>
             </Tooltip>
-            <Tooltip title="Save">
-                <IconButton>
-                <BookmarkBorderIcon fontSize="small" />
-                </IconButton>
+
+            <Tooltip title={isSaved ? "Unsave" : "Save"}>
+              <IconButton onClick={onSaveToggle}>
+                {isSaved ? (
+                  <BookmarkBorderIcon color="primary" />
+                ) : (
+                  <BookmarkBorderIcon />
+                )}
+              </IconButton>
             </Tooltip>
+
             <Tooltip title="Share">
               <IconButton>
                 <ShareOutlinedIcon />
@@ -114,6 +137,44 @@ function LocalPostCard({ post, canEdit , onDelete, onEdit}) {
           </>
         )}
       </Box>
+
+      {showComments && (
+  <Box sx={{ mt: 2 }}>
+    {/* Write a new comment */}
+    <Box className="flex space-x-2 items-center">
+      <input
+        type="text"
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
+        placeholder="Write a comment..."
+        className="flex-grow border border-gray-300 rounded px-3 py-1 text-sm"
+      />
+      <Button
+        size="small"
+        onClick={() => {
+          onAddComment(newComment);
+          setNewComment("");
+        }}
+        variant="contained"
+      >
+        Post
+      </Button>
+    </Box>
+
+    {/* Display existing comments */}
+    <Box sx={{ mt: 1, maxHeight: "150px", overflowY: "auto" }}>
+      {comments.map((comment, index) => (
+        <Typography
+          key={index}
+          variant="body2"
+          sx={{ mt: 0.5, background: "#f1f1f1", padding: "6px 10px", borderRadius: "6px" }}
+        >
+          • {comment}
+        </Typography>
+      ))}
+    </Box>
+  </Box>
+)}
     </Box>
   );
 }
