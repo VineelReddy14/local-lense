@@ -1,0 +1,37 @@
+[
+    {
+      "user": "Vineel Palla",
+      "verified": true,
+      "avatar": "/default-avatar.png",
+      "posts": [
+        {
+          "id": 1,
+          "title": "Highway Construction Delays",
+          "category": "Infrastructure",
+          "content": "Oklahoma drivers have been dealing with years of continuous construction on Interstate 35...",
+          "image": "/highway.jpg",
+          "likes": 2500000,
+          "comments": 973,
+          "date": "Feb 8"
+        }
+      ]
+    },
+    {
+      "user": "Teddy Diallo",
+      "verified": true,
+      "avatar": "/default-avatar.png",
+      "posts": [
+        {
+          "id": 2,
+          "title": "Is AI the Future Ruler of Our World?",
+          "category": "Technology",
+          "content": "Will AI remain a tool for humans, or are we heading towards a future where it takes control?",
+          "image": "/ai_tech.jpg",
+          "likes": 1800,
+          "comments": 42,
+          "date": "Feb 9"
+        }
+      ]
+    }
+  ]
+  
