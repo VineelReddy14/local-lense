@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Box,
@@ -26,37 +26,50 @@ const modalStyle = {
   p: 4,
 };
 
-function CreatePostModal({ open, onClose, onSubmit }) {
+function CreatePostModal({ open, onClose, onSubmit, initialData }) {
+
   const [category, setCategory] = useState("General");
   const [caption, setCaption] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
+  
+  useEffect(() => {
+    if (initialData) {
+      setCategory(initialData.category || "General");
+      setCaption(initialData.title || "");
+      setDescription(initialData.content || "");
+      setImage(initialData.image || "");
+    }
+  }, [initialData]);  
 
   const handlePost = () => {
     if (!caption.trim() || !description.trim()) return;
-
+  
     const newPost = {
-      id: Date.now(),
+      id: initialData?.id || Date.now(), 
       category,
       title: caption,
       content: description,
       image,
-      date: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      likes: 0,
-      comments: 0,
+      date:
+        initialData?.date ||
+        new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+      likes: initialData?.likes || 0,
+      comments: initialData?.comments || 0,
     };
-
+  
     onSubmit(newPost);
+  
     // Clear form
     setCategory("General");
     setCaption("");
     setDescription("");
     setImage("");
     onClose();
-  };
+  };  
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -66,8 +79,9 @@ function CreatePostModal({ open, onClose, onSubmit }) {
         </IconButton>
 
         <Typography variant="h5" fontWeight="bold" mb={2}>
-          Create A Post
+          {initialData ? "Edit Post" : "Create A Post"}
         </Typography>
+
 
         <Typography fontWeight="500" mb={0.5}>Post category:</Typography>
         <TextField
@@ -155,7 +169,7 @@ function CreatePostModal({ open, onClose, onSubmit }) {
               px: 4,
             }}
           >
-            Post
+            {initialData ? "Save Changes" : "Post"}
           </Button>
         </Box>
       </Box>

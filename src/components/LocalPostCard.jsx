@@ -18,7 +18,7 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
  * - post: { title, category, content, image(s), author, date, likes, comments }
  * - canEdit: boolean (if true, show Edit/Delete instead of Like/Comment/Share)
  */
-function LocalPostCard({ post, canEdit }) {
+function LocalPostCard({ post, canEdit , onDelete, onEdit}) {
   return (
     <Box sx={{ padding: "20px", borderBottom: "1px solid #eee" }}>
       {/* Top section: Author info and bookmark */}
@@ -70,8 +70,22 @@ function LocalPostCard({ post, canEdit }) {
       <Box sx={{ marginTop: "10px", display: "flex", gap: 2, alignItems: "center" }}>
         {canEdit ? (
           <>
-            <Button size="small">Edit</Button>
-            <Button size="small">Delete</Button>
+            <Button size="small" onClick={onEdit} >
+              Edit
+            </Button>
+            
+            <Button
+            size="small"
+            color="error"
+            onClick={() => {
+              if (window.confirm("Are you sure you want to delete this post?")) {
+                onDelete();
+              }
+            }}
+          >
+            Delete
+          </Button>
+
           </>
         ) : (
           <>

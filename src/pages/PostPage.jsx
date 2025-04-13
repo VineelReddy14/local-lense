@@ -10,7 +10,10 @@ import localPostsData from "../data/localPostsData.json"; // initial data
 function PostPage() {
   const [showModal, setShowModal] = useState(false);
   const [currentTab, setCurrentTab] = useState("Feed");
-  const currentUser = "Teddy Diallo"; // replace with auth later
+  const [postToEdit, setPostToEdit] = useState(null);
+  const [savedPosts, setSavedPosts] = useState([]);
+
+  const currentUser = "Teddy Diallo"; // to replace with auth later
 
   // Prepare initial posts with user info attached
   const allPostsFlattened = localPostsData.flatMap((user) =>
@@ -45,6 +48,30 @@ function PostPage() {
       avatar: "/default-avatar.png", // default avatar
     };
     setPosts([completePost, ...posts]);
+  };
+
+  //Handle the deletion of a post
+  const handleDeletePost = (id) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+  };
+
+  //Handles editing of a post
+  const handleEditPost = (updatedPost) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === updatedPost.id ? { ...post, ...updatedPost } : post
+      )
+    );
+    setPostToEdit(null); // Close modal
+  };
+
+  const handleToggleSave = (post) => {
+    const alreadySaved = savedPosts.some((p) => p.id === post.id);
+    if (alreadySaved) {
+      setSavedPosts(savedPosts.filter((p) => p.id !== post.id));
+    } else {
+      setSavedPosts([...savedPosts, post]);
+    }
   };
 
   return (
@@ -100,6 +127,8 @@ function PostPage() {
                 key={post.id}
                 post={post}
                 canEdit={currentTab === "Your Posts"}
+                onDelete = {() => handleDeletePost(post.id)}
+                onEdit={() => setPostToEdit(post)}
               />
             ))}
           </Box>
@@ -111,6 +140,13 @@ function PostPage() {
         open={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={handleCreatePost}
+      />
+      {/* Modal to edit an existing post */}
+      <CreatePostModal
+        open={Boolean(postToEdit)}
+        onClose={() => setPostToEdit(null)}
+        onSubmit={handleEditPost}
+        initialData={postToEdit}
       />
     </>
   );
