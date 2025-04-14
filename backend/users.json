@@ -3,6 +3,20 @@
     "fullName": "Sumadhuri Radhika Devi Dasi",
     "username": "sumadhuri",
     "email": "srdd.jps1@gmail.com",
-    "password": "Sumadhuri18"
-  }
+    "password": "Sumadhuri18",
+    "posts": []
+  },
+    {
+      "username": "teddy123",
+      "email": "teddy@example.com",
+      "password": "1234",
+      "fullName": "Teddy Diallo",
+      "avatar": "/default-avatar.png",
+      "verified": true,
+  
+      "posts": [],
+      "savedPosts": [],
+      "likes": [],
+      "comments": {} 
+    }
 ]
