@@ -43,9 +43,9 @@ export default function PostCard({ image, category, title, brief_content, author
           <Grid item xs container direction="column" spacing={1}>
             <Grid item xs>
               {/* Category */}
-              <Link to="#" className="text-blue-600 text-xs font-semibold uppercase">
-                {category}
-              </Link>
+              <Typography variant="caption" color="text.secondary" fontWeight="bold" textTransform="uppercase">
+                Topic: {category}
+              </Typography>
 
               {/* Title */}
               <Typography variant="h6" fontWeight="bold">

@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import Navbar from "../components/Navbar";
 import PostTabs from "../components/PostTabs";
 import UserHeader from "../components/UserHeader";
 import LocalPostCard from "../components/LocalPostCard";
-import localPostsData from "../data/localPostsData.json";
 import CreatePostModal from "../components/CreatePostModal";
 
 function PostPage() {
   const [showModal, setShowModal] = useState(false);
   const [currentTab, setCurrentTab] = useState("Feed");
   const currentUser = "Teddy Diallo";
+  const [localPostsData, setLocalPostsData] = useState([]);
+
+  useEffect(() => {
+    // Fetch the JSON file from the public folder
+    fetch("/data/localPostsData.json")
+      .then((response) => response.json())
+      .then((data) => setLocalPostsData(data))
+      .catch((error) => console.error("Error fetching local posts data:", error));
+  }, []);
 
   const allPosts = localPostsData.flatMap((user) =>
     user.posts.map((post) => ({

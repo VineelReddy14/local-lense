@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import Filterbar from "../components/Filterbar"; // Import the Filterbar component
+import Filterbar from "../components/Filterbar";
 import PostCard from "../components/PostCard";
-import { Box, Typography } from "@mui/material"; // Import Typography for the heading
-import newsData from "../data/News_data.json";
+import { Box, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 function HomePage() {
     const [selectedCategory, setSelectedCategory] = useState("ALL");
+    const [newsData, setNewsData] = useState([]);
+
+    useEffect(() => {
+        // Fetch the JSON file from the public folder
+        fetch("/data/News_data.json")
+            .then((response) => response.json())
+            .then((data) => setNewsData(data))
+            .catch((error) => console.error("Error fetching news data:", error));
+    }, []);
 
     // Filter the news data based on the selected category
     const filteredNews = selectedCategory === "ALL"
@@ -17,14 +26,13 @@ function HomePage() {
         <>
             <Navbar />
             <Box sx={{ display: "flex", backgroundColor: "#efefef", minHeight: "100vh" }}>
-                {/* Add the Filterbar on the left */}
                 <Box
                     sx={{
-                        position: "fixed", // Make the Filterbar fixed
-                        top: "40px", // Adjust based on Navbar height
+                        position: "fixed",
+                        top: "40px",
                         left: 0,
                         width: "250px",
-                        height: "calc(100vh - 70px)", // Full height minus Navbar height
+                        height: "calc(100vh - 70px)",
                         backgroundColor: "#f5f5f5",
                         borderRight: "1px solid #ddd",
                         padding: "20px",
@@ -35,19 +43,16 @@ function HomePage() {
                         onCategoryChange={setSelectedCategory}
                     />
                 </Box>
-                {/* Main content area */}
                 <Box
                     sx={{
-                        marginLeft: "250px", // Add margin to account for the fixed Filterbar
+                        marginLeft: "250px",
                         flex: 1,
                         display: "flex",
                         flexDirection: "column",
-                        alignItems: "center",
                         padding: "20px",
                         paddingTop: { xs: "20px", sm: "70px", md: "70px" },
                     }}
                 >
-                    {/* Heading for the selected category */}
                     <Typography
                         variant="h5"
                         sx={{
@@ -60,15 +65,23 @@ function HomePage() {
                         {selectedCategory === "ALL" ? "All Categories" : selectedCategory}
                     </Typography>
                     {filteredNews.map((article) => (
-                        <PostCard
+                        <Link
+                            to={{
+                                pathname: `/news/${article.id}`,
+                                state: { id: article.id }, // Pass the article ID correctly
+                            }}
                             key={article.id}
-                            image={`src/data/News_Images/${article.id}.jpeg`} // Use article.id for the image path
-                            category={article.category}
-                            title={article.title}
-                            brief_content={article.brief_content}
-                            author={article.author}
-                            date={article.date}
-                        />
+                            style={{ textDecoration: "none", color: "inherit" }}
+                        >
+                            <PostCard
+                                image={`/data/News_Images/${article.id}.jpeg`}
+                                category={article.category}
+                                title={article.title}
+                                brief_content={article.brief_content}
+                                author={article.author}
+                                date={article.date}
+                            />
+                        </Link>
                     ))}
                 </Box>
             </Box>

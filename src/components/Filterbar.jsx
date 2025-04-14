@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 
 function Filterbar({ selectedCategory, onCategoryChange }) {
-    const categories = ["ALL", "Education", "Entertainment"]; // Updated category
+    const categories = ["ALL", "Education", "Entertainment", "Politics", "Weather", "Sports", "Crime", "Business", "Health", "Technology", "Environment"]; // Updated category
 
     return (
         <Box
