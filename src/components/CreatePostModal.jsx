@@ -9,10 +9,13 @@ import {
   Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 
-const categoryOptions = ["General", "Technology", "Infrastructure", "Public Safety"];
+const categoryOptions = [
+  "General", "Education", "Entertainment", "Politics", "Weather",
+  "Sports", "Crime", "Business", "Health", "Technology", "Environment"
+];
 
 const modalStyle = {
   position: "absolute",
@@ -55,6 +58,11 @@ function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
     try {
       const user = auth.currentUser;
 
+      // ✅ Move the username logic here
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userData = userDoc.data();
+      const username = userData?.username || user.email;
+
       const newPost = {
         title: caption,
         content: description,
@@ -64,8 +72,8 @@ function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
           month: "short",
           day: "numeric",
         }),
-        author: user?.displayName || user?.email || "Anonymous",
-        authorId: user?.uid,
+        author: username, // 👈 display name from sign-up
+        authorId: user.uid,
         likes: 0,
         comments: [],
         timestamp: serverTimestamp(),
@@ -73,10 +81,10 @@ function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
 
       await addDoc(collection(db, "posts"), newPost);
 
-      if (onPostCreated) onPostCreated(); // Notify PostPage to refresh + close modal
+      if (onPostCreated) onPostCreated(); // let parent refresh + close modal
     } catch (err) {
       console.error("Failed to create post:", err);
-      alert("Post failed. Please check your connection or Firebase setup.");
+      alert("Post failed! Please check your Firebase setup.");
     }
   };
 

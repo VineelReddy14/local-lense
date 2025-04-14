@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ ADD THIS
+import { useNavigate } from "react-router-dom"; 
 import { auth, googleProvider } from "../firebase";
 import {
   signInWithEmailAndPassword,
@@ -12,14 +12,14 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate(); // ✅ ADD THIS
+  const navigate = useNavigate(); 
 
   const handleLogin = (e) => {
     e.preventDefault();
     setError("");
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        navigate("/local-posts"); // ✅ Redirect only if successful
+        navigate("/local-posts"); 
       })
       .catch((err) => {
         console.error("Login error:", err);
@@ -78,6 +78,16 @@ function Login() {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {message && <p style={{ color: "green" }}>{message}</p>}
       </form>
+      <p style={{ marginTop: "1rem" }}>
+  Don't have an account?{" "}
+  <span
+    onClick={() => navigate("/signup")}
+    style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
+  >
+    Create one
+  </span>
+</p>
+
     </div>
   );
 }
