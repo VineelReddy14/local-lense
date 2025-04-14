@@ -22,7 +22,7 @@ export default function PostCard({ image, category, title, brief_content, author
       sx={{
         p: 2,
         margin: 'auto',
-        maxWidth: 900,
+        maxWidth: 1100,
         minHeight: 150, // Increased Height
         width: "100%", // Allows it to take full width of container
         flexGrow: 1,
