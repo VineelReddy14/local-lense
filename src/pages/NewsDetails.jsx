@@ -81,15 +81,18 @@ function NewsDetails() {
                 sx={{
                     marginBottom: "10px",
                     textAlign: "center",
+                    color: 'text.secondary'
                 }}
             >
-                {newsArticle.category} | {newsArticle.author} | {newsArticle.date}
+                Topic: {newsArticle.category} | By '{newsArticle.author}' | {newsArticle.date}
             </Typography>
             <Typography
                 variant="body1"
                 sx={{
                     marginBottom: "20px",
-                    textAlign: "center",
+                    paddingLeft: "70px",
+                    paddingRight: "70px",
+                    textAlign: "justify",
                 }}
             >
                 {newsArticle.brief_content}
@@ -102,7 +105,6 @@ function NewsDetails() {
                     width: "100%",
                     maxWidth: "600px",
                     height: "350px",
-                    borderRadius: "10px",
                     display: "block",
                     margin: "0 auto",
                 }}

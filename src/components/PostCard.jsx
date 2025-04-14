@@ -53,7 +53,7 @@ export default function PostCard({ image, category, title, brief_content, author
               </Typography>
 
               {/* Content Brief */}
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="black.secondary">
                 {brief_content}
               </Typography>
             </Grid>
