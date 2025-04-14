@@ -1,5 +1,12 @@
 // src/pages/SignUpPage.jsx
 import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  Link
+} from '@mui/material';
 
 const SignUpPage = () => {
   const [fullName, setFullName] = useState('');
@@ -30,7 +37,7 @@ const SignUpPage = () => {
       return;
     }
 
-    setShowPasswordError(false); // Reset error message
+    setShowPasswordError(false);
 
     const newUser = { fullName, username, email, password };
 
@@ -44,7 +51,6 @@ const SignUpPage = () => {
       const data = await response.json();
       alert(data.message);
 
-      // Clear form
       setFullName('');
       setUsername('');
       setEmail('');
@@ -55,62 +61,139 @@ const SignUpPage = () => {
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="flex items-center mb-6">
-        <img src="/logo.svg" alt="logo" className="w-10 h-10 mr-2" />
-        <h1 className="text-2xl font-bold">LOCAL LENSE</h1>
-      </div>
+  const handleCancel = () => {
+    setFullName('');
+    setUsername('');
+    setEmail('');
+    setPassword('');
+    setShowPasswordError(false);
+  };
 
-      <form onSubmit={handleSignUp} className="flex flex-col items-center space-y-4">
-        <input
-          type="text"
-          placeholder="Enter full name"
-          className="border px-4 py-2 rounded w-64"
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        backgroundColor: "#f5f5f5",
+      }}
+    >
+      <Box
+        component="form"
+        onSubmit={handleSignUp}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "400px",
+          padding: "20px",
+          backgroundColor: "white",
+          borderRadius: "8px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        {/* Logo and App Name */}
+        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+          <img
+            src="src/assets/logo.png"
+            alt="Logo"
+            style={{ height: "60px", marginRight: "12px" }}
+          />
+          <Typography variant="h4" fontWeight="bold">
+            Local Lense
+          </Typography>
+        </Box>
+
+        <Typography
+          variant="h6"
+          sx={{ color: "primary.main", fontWeight: 500, marginBottom: "20px" }}
+        >
+          Create Account
+        </Typography>
+
+        <TextField
+          label="Full Name"
+          variant="outlined"
+          fullWidth
+          sx={{ marginBottom: "20px" }}
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="Create username"
-          className="border px-4 py-2 rounded w-64"
+
+        <TextField
+          label="Username"
+          variant="outlined"
+          fullWidth
+          sx={{ marginBottom: "20px" }}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <input
+
+        <TextField
+          label="Email ID"
           type="email"
-          placeholder="Email ID"
-          className="border px-4 py-2 rounded w-64"
+          variant="outlined"
+          fullWidth
+          sx={{ marginBottom: "20px" }}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <div className="flex flex-col items-start w-64">
-          <input
-            type="password"
-            placeholder="Password"
-            className="border px-4 py-2 rounded w-full"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <p className="text-xs text-gray-600 mt-1">
-            Must have at least one capital letter and one number.
-          </p>
-          {showPasswordError && (
-            <p className="text-sm text-red-600 mt-1">Did not fulfill conditions</p>
-          )}
-        </div>
-        <button
-          type="submit"
-          className="bg-gray-700 text-white px-6 py-2 rounded-full font-semibold"
-        >
-          Sign up
-        </button>
-      </form>
 
-      <div className="mt-4 text-sm">
-        <a href="/login">Login</a>
-      </div>
-    </div>
+        <TextField
+          label="Password"
+          type="password"
+          variant="outlined"
+          fullWidth
+          sx={{ marginBottom: showPasswordError ? "8px" : "20px" }}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <Typography
+          variant="body2"
+          sx={{ width: "100%", color: "gray", marginBottom: "4px" }}
+        >
+          Must have at least one capital letter and one number.
+        </Typography>
+
+        {showPasswordError && (
+          <Typography variant="body2" color="error" sx={{ marginBottom: "16px" }}>
+            Did not fulfill conditions
+          </Typography>
+        )}
+
+        <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            sx={{ width: "48%" }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ width: "48%" }}
+          >
+            Sign up
+          </Button>
+        </Box>
+
+        <Typography
+          variant="body2"
+          sx={{ color: "primary.main", marginTop: "20px" }}
+        >
+          Already have an account?{" "}
+          <Link href="/login" color="primary" underline="hover">
+            Login
+          </Link>
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

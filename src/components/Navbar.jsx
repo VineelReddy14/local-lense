@@ -46,7 +46,7 @@ function Navbar() {
 
                 <Button
                     component={Link}
-                    to="/local-posts"
+                    to="/login?redirect=/local-posts" //so now when user clicks on Local-Posts, it will redirect to the login page
                     sx={{
                         color: selectedPage === "Local-Posts" ? 'white' : 'black',
                         backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
@@ -77,10 +77,10 @@ function Navbar() {
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
                 >
-                    <MenuItem onClick={handleMenuClose} component={Link} to="/profile">Profile</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component={Link} to="/login">Login</MenuItem>
                     <MenuItem onClick={handleMenuClose} component={Link} to="/saved-posts">Saved Posts</MenuItem>
                     <MenuItem onClick={handleMenuClose} component={Link} to="/help">Help</MenuItem>
-                    <MenuItem onClick={handleMenuClose} component={Link} to="/logout">Logout</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component={Link} to="/login">Logout</MenuItem>
                 </Menu>
 
                 <IconButton edge="end" className="text-black">
