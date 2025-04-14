@@ -30,19 +30,30 @@ function UserHeader({ name, postCount, followers, following, onCreatePostClick }
           alt={name}
           src="/default-avatar.png"
         />
-        <Box>
-          <Typography fontWeight="bold">{name}</Typography>
-          <Typography component="span">
-            <strong>{postCount}</strong> Posts{" "}
-            <strong>{followers}</strong> Followers{" "}
-            <strong>{following}</strong> Following
-          </Typography>
-        </Box>
+
+<Box sx={{ display: "flex", gap: 4, mt: 1, fontSize: "15px" }}>
+  {[
+    { label: "posts", value: postCount },
+    { label: "followers", value: followers },
+    { label: "following", value: following },
+  ].map((stat, i) => (
+    <Box key={i}>
+      <Typography component="span" fontWeight="bold" color="text.primary">
+        {stat.value.toLocaleString()}
+      </Typography>{" "}
+      <Typography component="span" color="text.secondary">
+        {stat.label}
+      </Typography>
+    </Box>
+  ))}
+</Box>
+
+
       </Box>
 
       {/* Right: Create Post Button */}
       <Button
-        onClick={onCreatePostClick} // 💥 trigger modal
+        onClick={onCreatePostClick} // trigger modal
         variant="outlined"
         startIcon={<AddIcon />}
         sx={{

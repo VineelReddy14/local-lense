@@ -8,9 +8,10 @@
           "id": 1,
           "title": "Highway Construction Delays",
           "category": "Infrastructure",
-          "content": "Oklahoma drivers have been dealing with years of continuous construction on Interstate 35...",
+          "content": "Oklahoma drivers have been dealing with years of continuous construction on Interstate 35, particularly at the I-35/I-240 interchange. What was supposed to be a series of upgrades has turned into an endless cycle of roadwork, detours, and traffic congestion. This issue has been ongoing since 2016, with no clear end in sight as new phases keep getting added. Now, more projects are planned until at least the mid-2030s. Residents and commuters have voiced growing frustration, citing delays, increased fuel usage, and safety concerns."
+,
           "image": "/highway.jpg",
-          "likes": 2500000,
+          "likes": 25,
           "comments": 973,
           "date": "Feb 8"
         }
@@ -27,7 +28,7 @@
           "category": "Technology",
           "content": "Will AI remain a tool for humans, or are we heading towards a future where it takes control?",
           "image": "/ai_tech.jpg",
-          "likes": 1800,
+          "likes": 18,
           "comments": 42,
           "date": "Feb 9"
         }
