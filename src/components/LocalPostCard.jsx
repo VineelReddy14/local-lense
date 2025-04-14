@@ -29,7 +29,15 @@ function LocalPostCard({
   const [showFullContent, setShowFullContent] = useState(false);
 
   return (
-    <Box sx={{ padding: "20px", borderBottom: "1px solid #eee" }}>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        padding: "20px",
+        borderBottom: "1px solid #eee",
+        width: "100%",
+        maxWidth: "750px", // 👈 adjust this value as needed
+      }}
+    >
       {/* Top Row: Avatar, Author, Verified, Date, Category */}
       <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
         <Avatar
@@ -152,68 +160,85 @@ function LocalPostCard({
       )}
 
       {/* Action Buttons */}
-      <Box sx={{ mt: 2, display: "flex", gap: 2, alignItems: "center" }}>
-        {canEdit ? (
-          <>
-            <Button size="small" onClick={onEdit}>
-              Edit
-            </Button>
-            <Button
-              size="small"
-              color="error"
-              onClick={() => {
-                if (window.confirm("Are you sure you want to delete this post?")) {
-                  onDelete();
-                }
-              }}
-            >
-              Delete
-            </Button>
-          </>
-        ) : (
-          <>
-            <Tooltip title="Like">
-              <Box
-                onClick={onToggleLike}
-                className="flex items-center space-x-1 text-sm cursor-pointer"
-                sx={{ color: isLiked ? "red" : "inherit" }}
-              >
-                <FavoriteBorderIcon
-                  fontSize="small"
-                  color={isLiked ? "error" : "inherit"}
-                />
-                <span>{post.likes}</span>
-              </Box>
-            </Tooltip>
+      <Box
+  sx={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    mt: 2,
+  }}
+>
+  {canEdit ? (
+    <Box sx={{ display: "flex", gap: 2 }}>
+      <Button size="small" onClick={onEdit}>
+        Edit
+      </Button>
+      <Button
+        size="small"
+        color="error"
+        onClick={() => {
+          if (window.confirm("Are you sure you want to delete this post?")) {
+            onDelete();
+          }
+        }}
+      >
+        Delete
+      </Button>
+    </Box>
+  ) : (
+    <>
+      {/* Left icons: Like + Comment */}
+      <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+        <Tooltip title="Like">
+          <Box
+            onClick={onToggleLike}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              cursor: "pointer",
+              color: isLiked ? "red" : "inherit",
+            }}
+          >
+            <FavoriteBorderIcon fontSize="small" color={isLiked ? "error" : "inherit"} />
+            <Typography variant="body2">{post.likes}</Typography>
+          </Box>
+        </Tooltip>
 
-            <Tooltip title="Comment">
-              <Box
-                onClick={() => setShowComments((prev) => !prev)}
-                className="flex items-center space-x-1 text-sm cursor-pointer"
-              >
-                <ChatBubbleOutlineIcon fontSize="small" />
-                <span>{comments.length}</span>
-              </Box>
-            </Tooltip>
-
-            <Tooltip title={isSaved ? "Unsave" : "Save"}>
-              <IconButton onClick={onSaveToggle}>
-                {isSaved ? (
-                  <BookmarkBorderIcon color="primary" />
-                ) : (
-                  <BookmarkBorderIcon />
-                )}
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Share">
-              <IconButton>
-                <ShareOutlinedIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        )}
+        <Tooltip title="Comment">
+          <Box
+            onClick={() => setShowComments((prev) => !prev)}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              cursor: "pointer",
+            }}
+          >
+            <ChatBubbleOutlineIcon fontSize="small" />
+            <Typography variant="body2">{comments.length}</Typography>
+          </Box>
+        </Tooltip>
       </Box>
+
+      {/* Right icons: Save + Share */}
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <Tooltip title={isSaved ? "Unsave" : "Save"}>
+          <IconButton onClick={onSaveToggle} size="small">
+            <BookmarkBorderIcon fontSize="small" color={isSaved ? "primary" : "inherit"} />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Share">
+          <IconButton size="small">
+            <ShareOutlinedIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    </>
+  )}
+</Box>
+
 
       {/* Comments Section */}
       {showComments && (
@@ -258,6 +283,8 @@ function LocalPostCard({
           </Box>
         </Box>
       )}
+          
+          </Box>
     </Box>
   );
 }
