@@ -1,0 +1,120 @@
+/* filepath: c:\Users\nandi\OneDrive\Desktop\Nandini Krishna 2025\HCI\cloned_code_hci\local-lense\src\pages\LoginPage.css */
+/* Entire page layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 2px solid blueviolet;
+    position: relative;
+}
+
+/* Logo + title pinned to top center */
+.top-header {
+    position: absolute;
+    top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Login form centered vertically */
+.container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form fields and button */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form input {
+    width: 250px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid gray;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.login-form button {
+    width: 120px;
+    padding: 10px;
+    background-color: #4a4a4a;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.login-form button:hover {
+    background-color: #333;
+}
+
+/* Footer links */
+.links {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.links a {
+    color: #000;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.google-login {
+    margin-top: 20px;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: white;
+    border: 1px solid #dcdcdc;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.google-btn:hover {
+    background-color: #f7f7f7;
+}
+
+.google-icon {
+    width: 18px;
+    height: 18px;
+}

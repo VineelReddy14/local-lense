@@ -4,16 +4,30 @@ import { AppBar, Toolbar, Button, Typography, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu"; // Import hamburger icon
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box } from "@mui/material";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 function Navbar() {
     const location = useLocation();
     const [selectedPage, setSelectedPage] = useState("");
+    const [anchorEl, setAnchorEl] = useState(null);
+
 
     useEffect(() => {
-        if (location.pathname === "/") setSelectedPage("News");
+        if (location.pathname === "/home") setSelectedPage("News");
         else if (location.pathname === "/local-posts") setSelectedPage("Local-Posts");
         else if (location.pathname === "/profile") setSelectedPage("Account");
     }, [location.pathname]);
+
+     // Handlers for dropdown menu
+     const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
 
     return (
         <AppBar position="fixed" sx={{ backgroundColor: 'white', minHeight: "40px" }} className="shadow-md">
@@ -21,7 +35,7 @@ function Navbar() {
             
                 <Button
                     component={Link}
-                    to="/"
+                    to="/home"
                     sx={{
                         color: selectedPage === "News" ? 'white' : 'black',
                         backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
@@ -48,9 +62,9 @@ function Navbar() {
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
 
-                <Button
-                    component={Link}
-                    to="/profile"
+                     {/* Dropdown for Account */}
+                     <Button
+                    onClick={handleMenuOpen}
                     sx={{
                         color: selectedPage === "Account" ? 'white' : 'black',
                         backgroundColor: selectedPage === "Account" ? 'black' : 'transparent'
@@ -58,6 +72,17 @@ function Navbar() {
                 >
                     Account
                 </Button>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                >
+                    <MenuItem onClick={handleMenuClose} component={Link} to="/profile">Profile</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component={Link} to="/saved-posts">Saved Posts</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component={Link} to="/help">Help</MenuItem>
+                    <MenuItem onClick={handleMenuClose} component={Link} to="/logout">Logout</MenuItem>
+                </Menu>
+
                 <IconButton edge="end" className="text-black">
                     <ExpandMoreIcon />
                 </IconButton>

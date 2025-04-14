@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "category": "Infrastructure",
+        "title": "Highway Construction Delays",
+        "brief_content": "Oklahoma drivers have been dealing with years of construction on I-35...",
+        "author": "Vineel Palla",
+        "date": "2025-02-08",
+        "likes": 2500000,
+        "comments": 973
+    },
+    {
+        "id": 2,
+        "category": "Public Safety",
+        "title": "Crime Rates Rising in OKC",
+        "brief_content": "Oklahoma City has seen a sharp increase in crime rates over the past few years...",
+        "author": "Teddy Diallo",
+        "date": "2025-02-07",
+        "likes": 1500000,
+        "comments": 567
+    }
+]
