@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { Box, Typography, Button, IconButton } from "@mui/material";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
 
 function NewsDetails() {
     const { id } = useParams(); // Get the news ID from the URL
     const location = useLocation(); // Access the state passed via Link
+    const navigate = useNavigate(); // Hook to navigate programmatically
     const articleId = location.state?.id || id; // Use state ID or fallback to URL ID
 
     const [newsArticle, setNewsArticle] = useState(null);
+    const [isBookmarked, setIsBookmarked] = useState(false); // State for bookmark toggle
 
     useEffect(() => {
         // Fetch the JSON file from the public folder
@@ -29,13 +33,65 @@ function NewsDetails() {
 
     return (
         <Box sx={{ padding: "20px" }}>
-            <Typography variant="h4" sx={{ fontWeight: "bold", marginBottom: "20px" }}>
+            {/* Back Button */}
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate(-1)}
+                sx={{
+                    position: "fixed",
+                    top: "20px",
+                    left: "20px",
+                    zIndex: 1000,
+                }}
+            >
+                Back
+            </Button>
+
+            {/* Bookmark Icon */}
+            <IconButton
+                onClick={() => setIsBookmarked(!isBookmarked)} // Toggle bookmark state
+                sx={{
+                    position: "fixed",
+                    top: "10px",
+                    right: "20px",
+                    zIndex: 1000,
+                }}
+                aria-label="Bookmark this article"
+            >
+                save {isBookmarked ? (
+                    <BookmarkOutlinedIcon sx={{ color: "black", fontSize: "2rem" }} />
+                ) : (
+                    <BookmarkBorderOutlinedIcon sx={{ color: "black", fontSize: "2rem" }} />
+                )}
+            </IconButton>
+
+            <Typography
+                variant="h4"
+                sx={{
+                    fontWeight: "bold",
+                    marginBottom: "20px",
+                    textAlign: "center",
+                }}
+            >
                 {newsArticle.title}
             </Typography>
-            <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
+            <Typography
+                variant="subtitle1"
+                sx={{
+                    marginBottom: "10px",
+                    textAlign: "center",
+                }}
+            >
                 {newsArticle.category} | {newsArticle.author} | {newsArticle.date}
             </Typography>
-            <Typography variant="body1" sx={{ marginBottom: "20px" }}>
+            <Typography
+                variant="body1"
+                sx={{
+                    marginBottom: "20px",
+                    textAlign: "center",
+                }}
+            >
                 {newsArticle.brief_content}
             </Typography>
             {/* Use the dynamically constructed image path */}
@@ -45,13 +101,21 @@ function NewsDetails() {
                 style={{
                     width: "100%",
                     maxWidth: "600px",
-                    height: "auto",
+                    height: "350px",
                     borderRadius: "10px",
                     display: "block",
                     margin: "0 auto",
                 }}
             />
-            <Typography variant="body1" sx={{ marginTop: "20px" }}>
+            <Typography
+                variant="body1"
+                sx={{
+                    marginTop: "20px",
+                    textAlign: "justify",
+                    paddingLeft: "70px",
+                    paddingRight: "90px",
+                }}
+            >
                 {newsArticle.details}
             </Typography>
         </Box>
