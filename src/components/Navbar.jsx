@@ -14,7 +14,7 @@ function Navbar() {
 
 
     useEffect(() => {
-        if (location.pathname === "/") setSelectedPage("News");
+        if (location.pathname === "/home") setSelectedPage("News");
         else if (location.pathname === "/local-posts") setSelectedPage("Local-Posts");
         else if (location.pathname === "/profile") setSelectedPage("Account");
     }, [location.pathname]);
@@ -35,7 +35,7 @@ function Navbar() {
             
                 <Button
                     component={Link}
-                    to="/"
+                    to="/home"
                     sx={{
                         color: selectedPage === "News" ? 'white' : 'black',
                         backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
