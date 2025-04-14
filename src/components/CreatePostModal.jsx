@@ -9,7 +9,8 @@ import {
   Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import UploadIcon from "@mui/icons-material/Upload";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../firebase";
 
 const categoryOptions = ["General", "Technology", "Infrastructure", "Public Safety"];
 
@@ -26,50 +27,58 @@ const modalStyle = {
   p: 4,
 };
 
-function CreatePostModal({ open, onClose, onSubmit, initialData }) {
-
+function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
   const [category, setCategory] = useState("General");
   const [caption, setCaption] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  
+
   useEffect(() => {
+    if (open && !initialData) {
+      setCategory("General");
+      setCaption("");
+      setDescription("");
+      setImage("");
+    }
+
     if (initialData) {
       setCategory(initialData.category || "General");
       setCaption(initialData.title || "");
       setDescription(initialData.content || "");
       setImage(initialData.image || "");
     }
-  }, [initialData]);  
+  }, [open, initialData]);
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!caption.trim() || !description.trim()) return;
-  
-    const newPost = {
-      id: initialData?.id || Date.now(), 
-      category,
-      title: caption,
-      content: description,
-      image,
-      date:
-        initialData?.date ||
-        new Date().toLocaleDateString("en-US", {
+
+    try {
+      const user = auth.currentUser;
+
+      const newPost = {
+        title: caption,
+        content: description,
+        category,
+        image,
+        date: new Date().toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
         }),
-      likes: initialData?.likes || 0,
-      comments: initialData?.comments || 0,
-    };
-  
-    onSubmit(newPost);
-  
-    // Clear form
-    setCategory("General");
-    setCaption("");
-    setDescription("");
-    setImage("");
-    onClose();
-  };  
+        author: user?.displayName || user?.email || "Anonymous",
+        authorId: user?.uid,
+        likes: 0,
+        comments: [],
+        timestamp: serverTimestamp(),
+      };
+
+      await addDoc(collection(db, "posts"), newPost);
+
+      if (onPostCreated) onPostCreated(); // Notify PostPage to refresh + close modal
+    } catch (err) {
+      console.error("Failed to create post:", err);
+      alert("Post failed. Please check your connection or Firebase setup.");
+    }
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -81,7 +90,6 @@ function CreatePostModal({ open, onClose, onSubmit, initialData }) {
         <Typography variant="h5" fontWeight="bold" mb={2}>
           {initialData ? "Edit Post" : "Create A Post"}
         </Typography>
-
 
         <Typography fontWeight="500" mb={0.5}>Post category:</Typography>
         <TextField
@@ -116,45 +124,42 @@ function CreatePostModal({ open, onClose, onSubmit, initialData }) {
           sx={{ mb: 2 }}
         />
 
-{/* Upload Image */}
-<Box
-  sx={{
-    border: "2px dashed #ccc",
-    borderRadius: "10px",
-    py: 2,
-    px: 3,
-    mb: 3,
-    textAlign: "center",
-  }}
->
-  <Typography fontWeight="bold" mb={1}>
-    Upload Image
-  </Typography>
+        {/* Upload Image */}
+        <Box
+          sx={{
+            border: "2px dashed #ccc",
+            borderRadius: "10px",
+            py: 2,
+            px: 3,
+            mb: 3,
+            textAlign: "center",
+          }}
+        >
+          <Typography fontWeight="bold" mb={1}>Upload Image</Typography>
 
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => setImage(reader.result);
-        reader.readAsDataURL(file);
-      }
-    }}
-  />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => setImage(reader.result);
+                reader.readAsDataURL(file);
+              }
+            }}
+          />
 
-  {/* Preview if image exists */}
-    {image && (
-        <Box mt={2}>
-        <img
-            src={image}
-            alt="Preview"
-            style={{ maxWidth: "100%", maxHeight: 200, borderRadius: "8px" }}
-        />
+          {image && (
+            <Box mt={2}>
+              <img
+                src={image}
+                alt="Preview"
+                style={{ maxWidth: "100%", maxHeight: 200, borderRadius: "8px" }}
+              />
+            </Box>
+          )}
         </Box>
-    )}
-    </Box>
 
         <Box sx={{ textAlign: "right" }}>
           <Button
