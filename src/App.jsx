@@ -15,7 +15,7 @@ import useSavedPosts from "./hooks/useSavedPosts"; //hey new comment
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null); //second comment
-  const { savedPosts, toggleSave } = useSavedPosts();
+  const { savedPosts, toggleSave } = useSavedPosts(); // third comm
 
   // Track user auth state
   useEffect(() => {
