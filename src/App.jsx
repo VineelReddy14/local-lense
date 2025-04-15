@@ -14,7 +14,7 @@ import HelpPage from "./pages/HelpPage";
 import useSavedPosts from "./hooks/useSavedPosts"; //hey new comment
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null); //second comment
   const { savedPosts, toggleSave } = useSavedPosts();
 
   // Track user auth state
