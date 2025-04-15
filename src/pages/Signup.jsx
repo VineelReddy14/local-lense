@@ -20,8 +20,11 @@ function Signup() {
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
-        username: username
+        username: username,
+        followers: 0, 
+        following: 0   
       });
+      
 
       navigate("/local-posts");
     } catch (err) {

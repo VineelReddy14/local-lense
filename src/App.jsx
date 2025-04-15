@@ -10,6 +10,7 @@ import NewsDetails from "./pages/NewsDetails";
 import SavedPosts from "./pages/SavedPosts";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import HelpPage from "./pages/HelpPage";
 import useSavedPosts from "./hooks/useSavedPosts";
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
             currentUser ? <NewsDetails /> : <Navigate to="/login" />
           }
         />
+        <Route path="/help" element={<HelpPage />} />
       </Routes>
     </Router>
   );

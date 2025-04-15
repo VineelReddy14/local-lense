@@ -4,8 +4,14 @@ import {
   collection,
   getDocs,
   query,
-  orderBy
+  orderBy,
+  deleteDoc,
+  updateDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
 } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 
 import Navbar from "../components/Navbar";
@@ -15,6 +21,7 @@ import LocalPostCard from "../components/LocalPostCard";
 import CreatePostModal from "../components/CreatePostModal";
 
 function PostPage() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentTab, setCurrentTab] = useState("Feed");
   const [postToEdit, setPostToEdit] = useState(null);
@@ -23,11 +30,25 @@ function PostPage() {
   const [commentsMap, setCommentsMap] = useState({});
   const [posts, setPosts] = useState([]);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [followerData, setFollowerData] = useState({ followers: 0, following: 0 });
+  //const user = auth.currentUser;
 
-  const user = auth.currentUser;
-  const currentUser = user?.displayName || user?.email || "Anonymous";
+  // Track auth user
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      if (user) fetchUserData(user.uid);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  // Extract fetchPosts so we can call it anytime
+  // Fetch posts once user is known
+  useEffect(() => {
+    if (currentUser) {
+      fetchPosts();
+    }
+  }, [currentUser]);
+
   const fetchPosts = async () => {
     try {
       const postsRef = collection(db, "posts");
@@ -35,7 +56,7 @@ function PostPage() {
       const snapshot = await getDocs(q);
       const fetchedPosts = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       setPosts(fetchedPosts);
     } catch (err) {
@@ -43,26 +64,56 @@ function PostPage() {
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  const fetchUserData = async (uid) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      const userData = userDoc.data();
+      setFollowerData({
+        followers: userData?.followers || 0,
+        following: userData?.following || 0,
+      });
+    } catch (err) {
+      console.error("Failed to fetch user data:", err);
+    }
+  };
 
   const visiblePosts =
     currentTab === "Feed"
       ? posts
-      : posts.filter((post) => post.authorId === user?.uid);
+      : posts.filter((post) => post.authorId === currentUser?.uid);
 
-  const handleDeletePost = (id) => {
-    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+  const handleDeletePost = async (id) => {
+    try {
+      await deleteDoc(doc(db, "posts", id));
+      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+      alert("Could not delete the post.");
+    }
   };
 
-  const handleEditPost = (updatedPost) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === updatedPost.id ? { ...post, ...updatedPost } : post
-      )
-    );
-    setPostToEdit(null); // Close modal
+  const handleEditPost = async (updatedPost) => {
+    try {
+      const postRef = doc(db, "posts", updatedPost.id);
+      await updateDoc(postRef, {
+        title: updatedPost.title,
+        content: updatedPost.content,
+        category: updatedPost.category,
+        image: updatedPost.image,
+        timestamp: serverTimestamp(),
+      });
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === updatedPost.id ? { ...post, ...updatedPost } : post
+        )
+      );
+
+      setPostToEdit(null);
+    } catch (err) {
+      console.error("Failed to update post:", err);
+      alert("Could not update the post.");
+    }
   };
 
   const handleToggleSave = (post) => {
@@ -108,11 +159,13 @@ function PostPage() {
       <Navbar />
       <Box
         sx={{
-          backgroundColor: "#f7f7f7",
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          paddingX: "16px",
+          backgroundColor: "white",
+          width: "100%",
+          maxWidth: "900px",
+          margin: "0 auto", // fallback centering
+          borderRadius: "6px",
+          boxShadow: 1,
+          overflow: "hidden",
         }}
       >
         <Box
@@ -132,10 +185,12 @@ function PostPage() {
             <PostTabs currentTab={currentTab} onChange={setCurrentTab} />
 
             <UserHeader
-              name={currentUser}
-              postCount={visiblePosts.length}
-              followers={182}
-              following={256}
+              name={currentUser?.displayName || currentUser?.email || "Anonymous"}
+              //postCount={posts.filter((post) => post.authorId === user?.uid).length}
+              postCount={posts.filter((post) => post.authorId === currentUser?.uid).length}
+
+              followers={followerData.followers}
+              following={followerData.following}
               onCreatePostClick={() => setShowModal(true)}
             />
 
@@ -160,34 +215,36 @@ function PostPage() {
         </Box>
       </Box>
 
-      {/* Create Post Modal: Now with post refresh and success message */}
       <CreatePostModal
         open={showModal}
         onClose={() => setShowModal(false)}
         onPostCreated={() => {
-          fetchPosts();               
-          setShowModal(false);        
-          setShowSuccess(true);       
+          fetchPosts();
+          setShowModal(false);
+          setShowSuccess(true);
         }}
       />
 
-      {/* Edit Post Modal (optional for now) */}
       <CreatePostModal
         open={Boolean(postToEdit)}
         onClose={() => setPostToEdit(null)}
-        onSubmit={handleEditPost}
+        onPostUpdated={(updatedPost) => {
+          fetchPosts(); // Refresh after edit
+          setPostToEdit(null); // Close modal
+          setShowSuccess(true); // Show success message
+        }}
         initialData={postToEdit}
       />
 
-      {/*Snackbar for user feedback */}
+
       <Snackbar
         open={showSuccess}
         autoHideDuration={3000}
         onClose={() => setShowSuccess(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="success" onClose={() => setShowSuccess(false)}>
-          Post created successfully!
+          Post saved successfully!
         </Alert>
       </Snackbar>
     </>

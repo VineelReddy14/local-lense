@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
-  Modal,
-  Box,
-  Typography,
-  IconButton,
-  TextField,
-  MenuItem,
-  Button,
+  Modal, Box, Typography, IconButton, TextField, MenuItem, Button
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { addDoc, collection, serverTimestamp, doc, getDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../firebase";
+import { getDoc } from "firebase/firestore";
 
-const categoryOptions = [
-  "General", "Education", "Entertainment", "Politics", "Weather",
-  "Sports", "Crime", "Business", "Health", "Technology", "Environment"
-];
+const categoryOptions = ["General", "Education", "Entertainment", "Politics", "Weather", "Sports", "Crime", "Business", "Health", "Technology", "Environment"];
 
 const modalStyle = {
   position: "absolute",
@@ -30,7 +22,7 @@ const modalStyle = {
   p: 4,
 };
 
-function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
+function CreatePostModal({ open, onClose, onPostCreated, onPostUpdated, initialData }) {
   const [category, setCategory] = useState("General");
   const [caption, setCaption] = useState("");
   const [description, setDescription] = useState("");
@@ -58,33 +50,40 @@ function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
     try {
       const user = auth.currentUser;
 
-      // ✅ Move the username logic here
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      const userData = userDoc.data();
-      const username = userData?.username || user.email;
-
-      const newPost = {
+      const postData = {
         title: caption,
         content: description,
         category,
         image,
-        date: new Date().toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        }),
-        author: username, // 👈 display name from sign-up
-        authorId: user.uid,
-        likes: 0,
-        comments: [],
         timestamp: serverTimestamp(),
       };
 
-      await addDoc(collection(db, "posts"), newPost);
+      if (initialData) {
+        // UPDATE existing post
+        const postRef = doc(db, "posts", initialData.id);
+        await updateDoc(postRef, postData);
+        if (onPostUpdated) onPostUpdated({ ...initialData, ...postData });
+      } else {
+        // CREATE new post
+        const newPost = {
+          ...postData,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short", day: "numeric"
+          }),
+          author: user?.displayName || user?.email || "Anonymous",
+          authorId: user?.uid,
+          likes: 0,
+          comments: [],
+          commentCount: 0
+        };
+        await addDoc(collection(db, "posts"), newPost);
+        if (onPostCreated) onPostCreated();
+      }
 
-      if (onPostCreated) onPostCreated(); // let parent refresh + close modal
+      onClose(); // Close modal after save
     } catch (err) {
-      console.error("Failed to create post:", err);
-      alert("Post failed! Please check your Firebase setup.");
+      console.error("Failed to save post:", err);
+      alert("Could not save your post. Please try again.");
     }
   };
 
@@ -100,51 +99,25 @@ function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
         </Typography>
 
         <Typography fontWeight="500" mb={0.5}>Post category:</Typography>
-        <TextField
-          fullWidth
-          select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          size="small"
-          sx={{ mb: 2 }}
-        >
+        <TextField fullWidth select value={category} onChange={(e) => setCategory(e.target.value)} size="small" sx={{ mb: 2 }}>
           {categoryOptions.map((option) => (
             <MenuItem key={option} value={option}>{option}</MenuItem>
           ))}
         </TextField>
 
         <Typography fontWeight="500" mb={0.5}>Caption:</Typography>
-        <TextField
-          fullWidth
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-          size="small"
-          sx={{ mb: 2 }}
-        />
+        <TextField fullWidth value={caption} onChange={(e) => setCaption(e.target.value)} size="small" sx={{ mb: 2 }} />
 
         <Typography fontWeight="500" mb={0.5}>Description:</Typography>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          sx={{ mb: 2 }}
-        />
+        <TextField fullWidth multiline rows={4} value={description} onChange={(e) => setDescription(e.target.value)} sx={{ mb: 2 }} />
 
-        {/* Upload Image */}
         <Box
           sx={{
-            border: "2px dashed #ccc",
-            borderRadius: "10px",
-            py: 2,
-            px: 3,
-            mb: 3,
-            textAlign: "center",
+            border: "2px dashed #ccc", borderRadius: "10px",
+            py: 2, px: 3, mb: 3, textAlign: "center"
           }}
         >
           <Typography fontWeight="bold" mb={1}>Upload Image</Typography>
-
           <input
             type="file"
             accept="image/*"
@@ -157,14 +130,9 @@ function CreatePostModal({ open, onClose, onPostCreated, initialData }) {
               }
             }}
           />
-
           {image && (
             <Box mt={2}>
-              <img
-                src={image}
-                alt="Preview"
-                style={{ maxWidth: "100%", maxHeight: 200, borderRadius: "8px" }}
-              />
+              <img src={image} alt="Preview" style={{ maxWidth: "100%", maxHeight: 200, borderRadius: "8px" }} />
             </Box>
           )}
         </Box>
