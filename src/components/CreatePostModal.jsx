@@ -64,18 +64,21 @@ function CreatePostModal({ open, onClose, onPostCreated, onPostUpdated, initialD
         await updateDoc(postRef, postData);
         if (onPostUpdated) onPostUpdated({ ...initialData, ...postData });
       } else {
-        // CREATE new post
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userData = userDoc.exists() ? userDoc.data() : null;
+        
         const newPost = {
           ...postData,
           date: new Date().toLocaleDateString("en-US", {
             month: "short", day: "numeric"
           }),
-          author: user?.displayName || user?.email || "Anonymous",
+          author: userData?.username || user?.displayName || user?.email || "Anonymous",
           authorId: user?.uid,
           likes: 0,
           comments: [],
           commentCount: 0
         };
+        
         await addDoc(collection(db, "posts"), newPost);
         if (onPostCreated) onPostCreated();
       }

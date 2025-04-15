@@ -35,8 +35,24 @@ function Login() {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-      navigate("/local-posts"); // Optional: redirect here too
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+  
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+  
+      // If user doesn't exist in Firestore, create them
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+          username: user.displayName || user.email.split("@")[0], // fallback
+          followers: 0,
+          following: 0
+        });
+      }
+  
+      navigate("/local-posts");
     } catch (err) {
       console.error("Google login error:", err);
       setError("Google sign-in failed.");
