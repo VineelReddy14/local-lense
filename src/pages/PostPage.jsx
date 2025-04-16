@@ -151,26 +151,47 @@ function PostPage() {
   };
   
 
-  const handleToggleLike = (postId) => {
-    setLikedPostIds((prev) =>
-      prev.includes(postId)
-        ? prev.filter((id) => id !== postId)
-        : [...prev, postId]
-    );
-
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              likes: likedPostIds.includes(postId)
-                ? post.likes - 1
-                : post.likes + 1,
-            }
-          : post
-      )
-    );
+  const handleToggleLike = async (postId) => {
+    if (!currentUser) return;
+    const userId = currentUser.uid;
+  
+    const postRef = doc(db, "posts", postId);
+    const postSnap = await getDoc(postRef);
+    if (!postSnap.exists()) return;
+  
+    const postData = postSnap.data();
+    const likedBy = postData.likedBy || [];
+    const alreadyLiked = likedBy.includes(userId);
+  
+    try {
+      await updateDoc(postRef, {
+        likedBy: alreadyLiked
+          ? likedBy.filter((uid) => uid !== userId)
+          : [...likedBy, userId],
+        likes: alreadyLiked
+          ? (postData.likes || 1) - 1
+          : (postData.likes || 0) + 1,
+      });
+  
+      // update local state
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                likes: alreadyLiked ? post.likes - 1 : post.likes + 1,
+                likedBy: alreadyLiked
+                  ? post.likedBy.filter((uid) => uid !== userId)
+                  : [...(post.likedBy || []), userId],
+              }
+            : post
+        )
+      );
+    } catch (err) {
+      console.error("Error toggling like:", err);
+    }
   };
+  
 
   const handleAddComment = (postId, commentText) => {
     if (!commentText.trim()) return;
@@ -231,7 +252,7 @@ function PostPage() {
                 onEdit={() => setPostToEdit(post)}
                 onSaveToggle={() => handleToggleSave(post)}
                 isSaved={savedPosts.includes(post.id)}
-                isLiked={likedPostIds.includes(post.id)}
+                isLiked={post.likedBy?.includes(currentUser?.uid)}
                 onToggleLike={() => handleToggleLike(post.id)}
                 comments={commentsMap[post.id] || []}
                 onAddComment={(comment) => handleAddComment(post.id, comment)}

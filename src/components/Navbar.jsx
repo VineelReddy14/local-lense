@@ -96,7 +96,7 @@ function Navbar() {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              <MenuItem onClick={handleMenuClose} component={Link} to="/profile">Profile</MenuItem>
+              {/*<MenuItem onClick={handleMenuClose} component={Link} to="/profile">Profile</MenuItem>*/}
               <MenuItem onClick={handleMenuClose} component={Link} to="/saved">Saved Posts</MenuItem>
               <MenuItem onClick={handleMenuClose} component={Link} to="/help">Help</MenuItem>
               <MenuItem
