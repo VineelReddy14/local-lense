@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
-  Modal,
-  Box,
-  Typography,
-  IconButton,
-  TextField,
-  MenuItem,
-  Button,
+  Modal, Box, Typography, IconButton, TextField, MenuItem, Button
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import UploadIcon from "@mui/icons-material/Upload";
+import { addDoc, collection, doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../firebase";
+import { getDoc } from "firebase/firestore";
 
-const categoryOptions = ["General", "Technology", "Infrastructure", "Public Safety"];
+const categoryOptions = ["General", "Education", "Entertainment", "Politics", "Weather", "Sports", "Crime", "Business", "Health", "Technology", "Environment"];
 
 const modalStyle = {
   position: "absolute",
@@ -26,50 +22,73 @@ const modalStyle = {
   p: 4,
 };
 
-function CreatePostModal({ open, onClose, onSubmit, initialData }) {
-
+function CreatePostModal({ open, onClose, onPostCreated, onPostUpdated, initialData }) {
   const [category, setCategory] = useState("General");
   const [caption, setCaption] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  
+
   useEffect(() => {
+    if (open && !initialData) {
+      setCategory("General");
+      setCaption("");
+      setDescription("");
+      setImage("");
+    }
+
     if (initialData) {
       setCategory(initialData.category || "General");
       setCaption(initialData.title || "");
       setDescription(initialData.content || "");
       setImage(initialData.image || "");
     }
-  }, [initialData]);  
+  }, [open, initialData]);
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!caption.trim() || !description.trim()) return;
-  
-    const newPost = {
-      id: initialData?.id || Date.now(), 
-      category,
-      title: caption,
-      content: description,
-      image,
-      date:
-        initialData?.date ||
-        new Date().toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        }),
-      likes: initialData?.likes || 0,
-      comments: initialData?.comments || 0,
-    };
-  
-    onSubmit(newPost);
-  
-    // Clear form
-    setCategory("General");
-    setCaption("");
-    setDescription("");
-    setImage("");
-    onClose();
-  };  
+
+    try {
+      const user = auth.currentUser;
+
+      const postData = {
+        title: caption,
+        content: description,
+        category,
+        image,
+        timestamp: serverTimestamp(),
+      };
+
+      if (initialData) {
+        // UPDATE existing post
+        const postRef = doc(db, "posts", initialData.id);
+        await updateDoc(postRef, postData);
+        if (onPostUpdated) onPostUpdated({ ...initialData, ...postData });
+      } else {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userData = userDoc.exists() ? userDoc.data() : null;
+        
+        const newPost = {
+          ...postData,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short", day: "numeric"
+          }),
+          author: userData?.username || user?.displayName || user?.email || "Anonymous",
+          authorId: user?.uid,
+          likes: 0,
+          comments: [],
+          commentCount: 0
+        };
+        
+        await addDoc(collection(db, "posts"), newPost);
+        if (onPostCreated) onPostCreated();
+      }
+
+      onClose(); // Close modal after save
+    } catch (err) {
+      console.error("Failed to save post:", err);
+      alert("Could not save your post. Please try again.");
+    }
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -82,79 +101,44 @@ function CreatePostModal({ open, onClose, onSubmit, initialData }) {
           {initialData ? "Edit Post" : "Create A Post"}
         </Typography>
 
-
         <Typography fontWeight="500" mb={0.5}>Post category:</Typography>
-        <TextField
-          fullWidth
-          select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          size="small"
-          sx={{ mb: 2 }}
-        >
+        <TextField fullWidth select value={category} onChange={(e) => setCategory(e.target.value)} size="small" sx={{ mb: 2 }}>
           {categoryOptions.map((option) => (
             <MenuItem key={option} value={option}>{option}</MenuItem>
           ))}
         </TextField>
 
         <Typography fontWeight="500" mb={0.5}>Caption:</Typography>
-        <TextField
-          fullWidth
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-          size="small"
-          sx={{ mb: 2 }}
-        />
+        <TextField fullWidth value={caption} onChange={(e) => setCaption(e.target.value)} size="small" sx={{ mb: 2 }} />
 
         <Typography fontWeight="500" mb={0.5}>Description:</Typography>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          sx={{ mb: 2 }}
-        />
+        <TextField fullWidth multiline rows={4} value={description} onChange={(e) => setDescription(e.target.value)} sx={{ mb: 2 }} />
 
-{/* Upload Image */}
-<Box
-  sx={{
-    border: "2px dashed #ccc",
-    borderRadius: "10px",
-    py: 2,
-    px: 3,
-    mb: 3,
-    textAlign: "center",
-  }}
->
-  <Typography fontWeight="bold" mb={1}>
-    Upload Image
-  </Typography>
-
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => setImage(reader.result);
-        reader.readAsDataURL(file);
-      }
-    }}
-  />
-
-  {/* Preview if image exists */}
-    {image && (
-        <Box mt={2}>
-        <img
-            src={image}
-            alt="Preview"
-            style={{ maxWidth: "100%", maxHeight: 200, borderRadius: "8px" }}
-        />
+        <Box
+          sx={{
+            border: "2px dashed #ccc", borderRadius: "10px",
+            py: 2, px: 3, mb: 3, textAlign: "center"
+          }}
+        >
+          <Typography fontWeight="bold" mb={1}>Upload Image</Typography>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => setImage(reader.result);
+                reader.readAsDataURL(file);
+              }
+            }}
+          />
+          {image && (
+            <Box mt={2}>
+              <img src={image} alt="Preview" style={{ maxWidth: "100%", maxHeight: 200, borderRadius: "8px" }} />
+            </Box>
+          )}
         </Box>
-    )}
-    </Box>
 
         <Box sx={{ textAlign: "right" }}>
           <Button

@@ -1,36 +1,74 @@
+// src/App.jsx
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+
 import HomePage from "./pages/HomePage";
 import PostPage from "./pages/PostPage";
 import NewsDetails from "./pages/NewsDetails";
 import SavedPosts from "./pages/SavedPosts";
-import useSavedPosts from "./hooks/useSavedPosts"; 
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
-import HelpPage from "./pages/HelpPage"; {/* Help page added */}
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import HelpPage from "./pages/HelpPage";
+import useSavedPosts from "./hooks/useSavedPosts";
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
   const { savedPosts, toggleSave } = useSavedPosts();
+
+  // Track user auth state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+        console.log("Logged in:", user.email);
+      } else {
+        setCurrentUser(null);
+        console.log("Logged out.");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <Router>
       <Routes>
-      <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/local-posts" element={<PostPage />} />
-        <Route path="/news/:id" element={<NewsDetails />} /> 
-        {/* <Route path="/" element={<LoginPage />} /> */}
+        {/* Public routes */}
+        <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/help" element={<HelpPage />} /> {/* Help page added */}
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Protected routes */}
         <Route
           path="/local-posts"
-          element={<PostPage savedPosts={savedPosts} onToggleSave={toggleSave} />}
+          element={
+            currentUser ? (
+              <PostPage savedPosts={savedPosts} onToggleSave={toggleSave} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
           path="/saved"
-          element={<SavedPosts savedPosts={savedPosts} onToggleSave={toggleSave} />}
+          element={
+            currentUser ? (
+              <SavedPosts savedPosts={savedPosts} onToggleSave={toggleSave} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
-
+        <Route
+          path="/news/:id"
+          element={
+            currentUser ? <NewsDetails /> : <Navigate to="/login" />
+          }
+        />
+        <Route path="/help" element={<HelpPage />} />
       </Routes>
     </Router>
   );

@@ -1,70 +1,119 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Snackbar, Alert } from "@mui/material";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  deleteDoc,
+  updateDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../firebase";
+
 import Navbar from "../components/Navbar";
 import PostTabs from "../components/PostTabs";
 import UserHeader from "../components/UserHeader";
 import LocalPostCard from "../components/LocalPostCard";
 import CreatePostModal from "../components/CreatePostModal";
-import localPostsData from "../data/localPostsData.json"; // initial data
 
 function PostPage() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentTab, setCurrentTab] = useState("Feed");
   const [postToEdit, setPostToEdit] = useState(null);
   const [savedPosts, setSavedPosts] = useState([]);
   const [likedPostIds, setLikedPostIds] = useState([]);
   const [commentsMap, setCommentsMap] = useState({});
+  const [posts, setPosts] = useState([]);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [followerData, setFollowerData] = useState({ followers: 0, following: 0 });
+  //const user = auth.currentUser;
 
-  const currentUser = "Teddy Diallo"; // to replace with auth later
+  // Track auth user
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      if (user) fetchUserData(user.uid);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  // Prepare initial posts with user info attached
-  const allPostsFlattened = localPostsData.flatMap((user) =>
-    user.posts.map((post) => ({
-      ...post,
-      author: user.user,
-      verified: user.verified,
-      avatar: user.avatar,
-    }))
-  );
+  // Fetch posts once user is known
+  useEffect(() => {
+    if (currentUser) {
+      fetchPosts();
+    }
+  }, [currentUser]);
 
-  // Manage posts state
-  const [posts, setPosts] = useState(allPostsFlattened);
+  const fetchPosts = async () => {
+    try {
+      const postsRef = collection(db, "posts");
+      const q = query(postsRef, orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+      const fetchedPosts = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPosts(fetchedPosts);
+    } catch (err) {
+      console.error("Failed to fetch posts:", err);
+    }
+  };
 
-  // Filter visible posts
+  const fetchUserData = async (uid) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      const userData = userDoc.data();
+      setFollowerData({
+        followers: userData?.followers || 0,
+        following: userData?.following || 0,
+      });
+    } catch (err) {
+      console.error("Failed to fetch user data:", err);
+    }
+  };
+
   const visiblePosts =
     currentTab === "Feed"
       ? posts
-      : posts.filter((post) => post.author === currentUser);
+      : posts.filter((post) => post.authorId === currentUser?.uid);
 
-  // Get current user info
-  const currentUserData = localPostsData.find(
-    (u) => u.user === currentUser
-  );
-
-  // Add new post
-  const handleCreatePost = (newPost) => {
-    const completePost = {
-      ...newPost,
-      author: currentUser,
-      verified: true,
-      avatar: "/default-avatar.png", // default avatar
-    };
-    setPosts([completePost, ...posts]);
+  const handleDeletePost = async (id) => {
+    try {
+      await deleteDoc(doc(db, "posts", id));
+      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+      alert("Could not delete the post.");
+    }
   };
 
-  //Handle the deletion of a post
-  const handleDeletePost = (id) => {
-    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-  };
+  const handleEditPost = async (updatedPost) => {
+    try {
+      const postRef = doc(db, "posts", updatedPost.id);
+      await updateDoc(postRef, {
+        title: updatedPost.title,
+        content: updatedPost.content,
+        category: updatedPost.category,
+        image: updatedPost.image,
+        timestamp: serverTimestamp(),
+      });
 
-  //Handles editing of a post
-  const handleEditPost = (updatedPost) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === updatedPost.id ? { ...post, ...updatedPost } : post
-      )
-    );
-    setPostToEdit(null); // Close modal
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === updatedPost.id ? { ...post, ...updatedPost } : post
+        )
+      );
+
+      setPostToEdit(null);
+    } catch (err) {
+      console.error("Failed to update post:", err);
+      alert("Could not update the post.");
+    }
   };
 
   const handleToggleSave = (post) => {
@@ -82,8 +131,7 @@ function PostPage() {
         ? prev.filter((id) => id !== postId)
         : [...prev, postId]
     );
-  
-    // Update like count in posts state
+
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
@@ -100,7 +148,6 @@ function PostPage() {
 
   const handleAddComment = (postId, commentText) => {
     if (!commentText.trim()) return;
-  
     setCommentsMap((prev) => ({
       ...prev,
       [postId]: [...(prev[postId] || []), commentText],
@@ -112,22 +159,19 @@ function PostPage() {
       <Navbar />
       <Box
         sx={{
-          backgroundColor: "#f7f7f7", // lighter and softer gray
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center", // center content horizontally
-          paddingX: "16px"
+          backgroundColor: "white",
+          width: "100%",
+          maxWidth: "900px",
+          margin: "0 auto", // fallback centering
+          borderRadius: "6px",
+          boxShadow: 1,
+          overflow: "hidden",
         }}
       >
         <Box
           paddingTop={{ xs: "20px", sm: "70px", md: "70px" }}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+          sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
         >
-          {/* Main white content container */}
           <Box
             sx={{
               backgroundColor: "white",
@@ -138,54 +182,71 @@ function PostPage() {
               overflow: "hidden",
             }}
           >
-            {/* Tabs */}
             <PostTabs currentTab={currentTab} onChange={setCurrentTab} />
 
-            {/* User Header */}
             <UserHeader
-              name={currentUser}
-              postCount={currentUserData?.posts.length || 0}
-              followers={182}
-              following={256}
+              name={currentUser?.displayName || currentUser?.email || "Anonymous"}
+              //postCount={posts.filter((post) => post.authorId === user?.uid).length}
+              postCount={posts.filter((post) => post.authorId === currentUser?.uid).length}
+
+              followers={followerData.followers}
+              following={followerData.following}
               onCreatePostClick={() => setShowModal(true)}
             />
 
-            {/* Separator */}
             <Box sx={{ borderBottom: "1px solid #ddd" }} />
 
-            {/* Render all visible posts */}
             {visiblePosts.map((post) => (
               <LocalPostCard
                 key={post.id}
                 post={post}
                 canEdit={currentTab === "Your Posts"}
-                onDelete = {() => handleDeletePost(post.id)}
+                onDelete={() => handleDeletePost(post.id)}
                 onEdit={() => setPostToEdit(post)}
                 onSaveToggle={() => handleToggleSave(post)}
-                isSaved={savedPosts.some((p) => p.id === post.id)} //For styling
-                isLiked={likedPostIds.includes(post.id)} 
-                onToggleLike={() => handleToggleLike(post.id)} 
-                comments={commentsMap[post.id] || []} 
-                onAddComment={(comment) => handleAddComment(post.id, comment)} 
+                isSaved={savedPosts.some((p) => p.id === post.id)}
+                isLiked={likedPostIds.includes(post.id)}
+                onToggleLike={() => handleToggleLike(post.id)}
+                comments={commentsMap[post.id] || []}
+                onAddComment={(comment) => handleAddComment(post.id, comment)}
               />
             ))}
           </Box>
         </Box>
       </Box>
 
-      {/* Modal to create new post */}
       <CreatePostModal
         open={showModal}
         onClose={() => setShowModal(false)}
-        onSubmit={handleCreatePost}
+        onPostCreated={() => {
+          fetchPosts();
+          setShowModal(false);
+          setShowSuccess(true);
+        }}
       />
-      {/* Modal to edit an existing post */}
+
       <CreatePostModal
         open={Boolean(postToEdit)}
         onClose={() => setPostToEdit(null)}
-        onSubmit={handleEditPost}
+        onPostUpdated={(updatedPost) => {
+          fetchPosts(); // Refresh after edit
+          setPostToEdit(null); // Close modal
+          setShowSuccess(true); // Show success message
+        }}
         initialData={postToEdit}
       />
+
+
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={3000}
+        onClose={() => setShowSuccess(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="success" onClose={() => setShowSuccess(false)}>
+          Post saved successfully!
+        </Alert>
+      </Snackbar>
     </>
   );
 }

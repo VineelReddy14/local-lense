@@ -1,94 +1,119 @@
-import { use, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { AppBar, Toolbar, Button, Typography, IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu"; // Import hamburger icon
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box } from "@mui/material";
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  IconButton,
+  Avatar,
+  Tooltip,
+  Box,
+  Menu,
+  MenuItem
+} from "@mui/material";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 function Navbar() {
-    const location = useLocation();
-    const [selectedPage, setSelectedPage] = useState("");
-    const [anchorEl, setAnchorEl] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  const [currentUser, setCurrentUser] = useState(null);
+  const [selectedPage, setSelectedPage] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
 
-    useEffect(() => {
-        if (location.pathname === "/home") setSelectedPage("News");
-        else if (location.pathname === "/local-posts") setSelectedPage("Local-Posts");
-        else if (location.pathname === "/profile") setSelectedPage("Account");
-    }, [location.pathname]);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
-     // Handlers for dropdown menu
-     const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+  const userInitial =
+    currentUser?.displayName?.[0]?.toUpperCase() ||
+    currentUser?.email?.[0]?.toUpperCase() ||
+    "U";
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
+  useEffect(() => {
+    if (location.pathname === "/home") setSelectedPage("News");
+    else if (location.pathname === "/local-posts") setSelectedPage("Local-Posts");
+    else if (location.pathname === "/profile") setSelectedPage("Account");
+  }, [location.pathname]);
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    return (
-        <AppBar position="fixed" sx={{ backgroundColor: 'white', minHeight: "40px" }} className="shadow-md">
-            <Toolbar className="flex items-center" sx={{ minHeight: "40px" }}>
-            
-                <Button
-                    component={Link}
-                    to="/home"
-                    sx={{
-                        color: selectedPage === "News" ? 'white' : 'black',
-                        backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
-                    }}
-                >
-                    News
-                </Button>
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
-                <Button
-                    component={Link}
-                    to="/login?redirect=/local-posts" //so now when user clicks on Local-Posts, it will redirect to the login page
-                    sx={{
-                        color: selectedPage === "Local-Posts" ? 'white' : 'black',
-                        backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
-                    }}
-                >
-                    Local-Posts
-                </Button>
+  return (
+    <AppBar position="fixed" sx={{ backgroundColor: 'white', minHeight: "40px" }} className="shadow-md">
+      <Toolbar className="flex items-center" sx={{ minHeight: "40px" }}>
+        <Button
+          component={Link}
+          to="/home"
+          sx={{
+            color: selectedPage === "News" ? 'white' : 'black',
+            backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
+          }}
+        >
+          News
+        </Button>
 
-                <Box sx={{ flexGrow: 1 }} />
-                <img src="src/assets/logo.png" alt="Logo" style={{ height: '40px', marginRight: '10px' }} />
-                <Typography variant="h5" sx={{ color: 'black' }} className="font-roboto font-bold">
-                    Local Lense
-                </Typography>
-                <Box sx={{ flexGrow: 1 }} />
+        <Button
+          component={Link}
+          to="/local-posts"
+          sx={{
+            color: selectedPage === "Local-Posts" ? 'white' : 'black',
+            backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
+          }}
+        >
+          Local-Posts
+        </Button>
 
-                     {/* Dropdown for Account */}
-                     <Button
-                    onClick={handleMenuOpen}
-                    sx={{
-                        color: selectedPage === "Account" ? 'white' : 'black',
-                        backgroundColor: selectedPage === "Account" ? 'black' : 'transparent'
-                    }}
-                >
-                    Account
-                </Button>
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                >
-                    <MenuItem onClick={handleMenuClose} component={Link} to="/login">Login</MenuItem>
-                    <MenuItem onClick={handleMenuClose} component={Link} to="/saved-posts">Saved Posts</MenuItem>
-                    <MenuItem onClick={handleMenuClose} component={Link} to="/help">Help</MenuItem>
-                    <MenuItem onClick={handleMenuClose} component={Link} to="/login">Logout</MenuItem>
-                </Menu>
+        <Box sx={{ flexGrow: 1 }} />
+        <img src="src/assets/logo.png" alt="Logo" style={{ height: '40px', marginRight: '10px' }} />
+        <Typography variant="h5" sx={{ color: 'black' }} className="font-roboto font-bold">
+          Local Lense
+        </Typography>
+        <Box sx={{ flexGrow: 1 }} />
 
-                <IconButton edge="end" className="text-black">
-                    <ExpandMoreIcon />
-                </IconButton>
-            </Toolbar>
-        </AppBar>
-    );
+        {/* Show account only if user is logged in */}
+        {currentUser && (
+          <>
+            <Tooltip title="Account options">
+              <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
+                <Avatar sx={{ bgcolor: "black", width: 32, height: 32 }}>
+                  {userInitial}
+                </Avatar>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleMenuClose} component={Link} to="/profile">Profile</MenuItem>
+              <MenuItem onClick={handleMenuClose} component={Link} to="/saved">Saved Posts</MenuItem>
+              <MenuItem onClick={handleMenuClose} component={Link} to="/help">Help</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  signOut(auth);
+                  handleMenuClose();
+                  navigate("/login");
+                }}
+              >
+                Logout
+              </MenuItem>
+            </Menu>
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
 }
 
 export default Navbar;
