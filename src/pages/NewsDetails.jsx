@@ -49,7 +49,7 @@ function NewsDetails() {
             </Button>
 
             {/* Bookmark Icon */}
-            <IconButton
+            {/* <IconButton
                 onClick={() => setIsBookmarked(!isBookmarked)} // Toggle bookmark state
                 sx={{
                     position: "fixed",
@@ -64,7 +64,7 @@ function NewsDetails() {
                 ) : (
                     <BookmarkBorderOutlinedIcon sx={{ color: "black", fontSize: "2rem" }} />
                 )}
-            </IconButton>
+            </IconButton> */}
 
             <Typography
                 variant="h4"
