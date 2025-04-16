@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import Navbar from "../components/Navbar";
 
 const HelpPage = () => {
   const navigate = useNavigate();
@@ -22,37 +23,7 @@ const HelpPage = () => {
 
   return (
     <div>
-      {/* Top Navigation Bar */}
-      <AppBar position="fixed" sx={{ backgroundColor: "white", boxShadow: 1 }}>
-        <Toolbar sx={{ minHeight: 50, justifyContent: "space-between" }}>
-          {/* Back Button */}
-          <IconButton edge="start" onClick={handleBack} sx={{ color: "black" }}>
-            <ArrowBackIcon />
-          </IconButton>
-
-          {/* Centered Logo and Title */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src="/logo.png"
-              alt="Logo"
-              style={{ height: "32px", marginRight: "8px" }}
-            />
-            <Typography
-              variant="h6"
-              sx={{ color: "black", fontWeight: "bold" }}
-            >
-              LOCAL LENSE
-            </Typography>
-          </Box>
-
-          {/* Account Button */}
-          <Button sx={{ color: "black", textTransform: "none" }}>
-            <span style={{ marginRight: 4 }}>Account</span>
-            <span style={{ fontSize: 14 }}>▼</span>
-          </Button>
-        </Toolbar>
-      </AppBar>
-
+      < Navbar />
       {/* Help Section Content */}
       <Box sx={{ mt: 10, px: 3, display: "flex", justifyContent: "center" }}>
         <Box
