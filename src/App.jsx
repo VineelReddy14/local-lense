@@ -8,6 +8,7 @@ import NewsDetails from "./pages/NewsDetails";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import HelpPage from "./pages/HelpPage";
+import SavedPosts from "./pages/SavedPosts";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -29,6 +30,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/local-posts" element={currentUser ? <PostPage /> : <Navigate to="/login" />} />
         <Route path="/news/:id" element={currentUser ? <NewsDetails /> : <Navigate to="/login" />} />
+        <Route path="/saved" element={currentUser ? <SavedPosts /> : <Navigate to="/login" />} />
         <Route path="/help" element={<HelpPage />} />
       </Routes>
     </Router>

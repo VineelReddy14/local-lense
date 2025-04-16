@@ -42,12 +42,25 @@ function PostPage() {
     return () => unsubscribe();
   }, []);
 
-  // Fetch posts once user is known
+  const fetchSavedPosts = async (uid) => {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    const saved = userDoc.data()?.savedPosts || [];
+    setSavedPosts(saved);
+  };
+  
   useEffect(() => {
     if (currentUser) {
       fetchPosts();
+      fetchSavedPosts(currentUser.uid);
     }
   }, [currentUser]);
+  
+  // Fetch posts once user is known
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     fetchPosts();
+  //   }
+  // }, [currentUser]);
 
   const fetchPosts = async () => {
     try {
@@ -116,14 +129,27 @@ function PostPage() {
     }
   };
 
-  const handleToggleSave = (post) => {
-    const alreadySaved = savedPosts.some((p) => p.id === post.id);
-    if (alreadySaved) {
-      setSavedPosts(savedPosts.filter((p) => p.id !== post.id));
-    } else {
-      setSavedPosts([...savedPosts, post]);
+  const handleToggleSave = async (post) => {
+    const alreadySaved = savedPosts.includes(post.id);
+    if (!currentUser) return;
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      const saved = userSnap.data()?.savedPosts || [];
+      const isSaved = saved.includes(post.id);
+  
+      await updateDoc(userRef, {
+        savedPosts: isSaved ? saved.filter(id => id !== post.id) : [...saved, post.id],
+      });
+  
+      setSavedPosts((prev) =>
+        alreadySaved ? prev.filter((id) => id !== post.id) : [...prev, post.id]
+      );      
+    } catch (err) {
+      console.error("Failed to toggle save:", err);
     }
   };
+  
 
   const handleToggleLike = (postId) => {
     setLikedPostIds((prev) =>
@@ -204,7 +230,7 @@ function PostPage() {
                 onDelete={() => handleDeletePost(post.id)}
                 onEdit={() => setPostToEdit(post)}
                 onSaveToggle={() => handleToggleSave(post)}
-                isSaved={savedPosts.some((p) => p.id === post.id)}
+                isSaved={savedPosts.includes(post.id)}
                 isLiked={likedPostIds.includes(post.id)}
                 onToggleLike={() => handleToggleLike(post.id)}
                 comments={commentsMap[post.id] || []}
