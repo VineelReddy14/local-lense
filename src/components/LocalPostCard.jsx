@@ -299,9 +299,20 @@ function LocalPostCard({
                     />
                   </IconButton>
                 </Tooltip>
-
-                <Tooltip title="Share">
-                  <IconButton size="small">
+                <Tooltip title="Share via Email">
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      const subject = encodeURIComponent("Check out this post on Local Lense!");
+                      const preview = post.content.slice(0, 200);
+                      const link = `${window.location.origin}/news/${post.id}`;
+                      const body = encodeURIComponent(
+                        `Hey there,\n\nI thought you might enjoy this post I found on Local Lense:\n\n"${post.title}"\n\n${preview}...\n\nYou can read it here: ${link}\n\nLet me know what you think!\n\n— Sent via Local Lense`
+                      );
+                      const mailto = `mailto:?subject=${subject}&body=${body}`;
+                      window.location.href = mailto;
+                    }}
+                  >
                     <ShareOutlinedIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
