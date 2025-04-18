@@ -98,19 +98,6 @@ local-lense/
 
 ---
 
-## Key Files
-
-1. **`src/pages/HelpPage.jsx`**  
-   - Provides a static help page with instructions for using the app.  
-   - Includes sections for the News and Local Posts features.
-
-2. **`src/components/Navbar.jsx`**  
-   - A reusable navigation bar component for consistent navigation.
-
-3. **`src/firebase.js`**  
-   - Configures Firebase services for authentication and database operations.
-
----
 
 ## Home Page Overview (News)
 
@@ -129,9 +116,6 @@ The News Details Page (`NewsDetails.jsx`) provides detailed information about a 
 2. **Back Navigation**  
    - Allows users to return to the News section or the previous page.
 
-## Help Page Overview
-
-The Help Page (`HelpPage.jsx`) is designed to guide users on how to use the app. It includes the News page and the Local Posts page.
 
 ## Local Posts Page Overview
 
@@ -168,6 +152,10 @@ The Signup Page (`Signup.jsx`) allows new users to create an account. It include
 
 2. **Navigation to Login**  
    - Provides a link to the Login page for existing users.
+
+## Help Page Overview
+
+The Help Page (`HelpPage.jsx`) is designed to guide users on how to use the app. It includes the News page and the Local Posts page.
 ---
 
 ## Future Improvements
