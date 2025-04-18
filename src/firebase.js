@@ -19,7 +19,7 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 const auth = getAuth(app);
-setPersistence(auth, browserLocalPersistence); //keep user logged in across refresh
+setPersistence(auth, browserLocalPersistence); 
 const googleProvider = new GoogleAuthProvider();
 const db = getFirestore(app);
 

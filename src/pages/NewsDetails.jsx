@@ -14,7 +14,6 @@ function NewsDetails() {
     const [isBookmarked, setIsBookmarked] = useState(false); // State for bookmark toggle
 
     useEffect(() => {
-        // Fetch the JSON file from the public folder
         fetch("/data/News_data.json")
             .then((response) => response.json())
             .then((data) => {
@@ -28,7 +27,6 @@ function NewsDetails() {
         return <Typography variant="h5">Loading...</Typography>;
     }
 
-    // Dynamically construct the image path
     const imagePath = `/data/News_Images/${articleId}.jpeg`;
 
     return (

@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png"; // Default image
+import logo from "../assets/logo.png"; 
 
 const Img = styled('img')({
   margin: 'auto',
@@ -23,8 +23,8 @@ export default function PostCard({ image, category, title, brief_content, author
         p: 2,
         margin: 'auto',
         maxWidth: 1100,
-        minHeight: 150, // Increased Height
-        width: "100%", // Allows it to take full width of container
+        minHeight: 150, 
+        width: "100%", 
         flexGrow: 1,
         backgroundColor: '#fff',
         border: '1px solid #ddd'

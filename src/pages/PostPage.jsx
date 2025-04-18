@@ -209,7 +209,7 @@ function PostPage() {
           backgroundColor: "white",
           width: "100%",
           maxWidth: "900px",
-          margin: "0 auto", // fallback centering
+          margin: "0 auto", 
           borderRadius: "6px",
           boxShadow: 1,
           overflow: "hidden",

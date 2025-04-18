@@ -68,7 +68,7 @@ function HomePage() {
                         <Link
                             to={{
                                 pathname: `/news/${article.id}`,
-                                state: { id: article.id }, // Pass the article ID correctly
+                                state: { id: article.id }, 
                             }}
                             key={article.id}
                             style={{ textDecoration: "none", color: "inherit" }}

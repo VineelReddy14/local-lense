@@ -2,15 +2,7 @@ import React from "react";
 import { Box, Typography, Avatar, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-/**
- * User profile info with "Create a post" button.
- * Props:
- * - name: string
- * - postCount: number
- * - followers: number
- * - following: number
- * - onCreatePostClick: function (to trigger modal)
- */
+
 function UserHeader({ name, postCount, followers, following, onCreatePostClick }) {
   return (
     <Box
