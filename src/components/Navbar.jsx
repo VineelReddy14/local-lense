@@ -36,7 +36,7 @@ function Navbar() {
     "U";
 
   useEffect(() => {
-    if (location.pathname === "/home") setSelectedPage("News");
+    if (location.pathname === "/" || location.pathname === "/home") setSelectedPage("News");
     else if (location.pathname === "/local-posts") setSelectedPage("Local-Posts");
     else if (location.pathname === "/profile") setSelectedPage("Account");
   }, [location.pathname]);
