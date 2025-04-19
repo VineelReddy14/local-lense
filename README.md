@@ -156,7 +156,6 @@ The Signup Page (`Signup.jsx`) allows new users to create an account. It include
 ## Help Page Overview
 
 The Help Page (`HelpPage.jsx`) is designed to guide users on how to use the app. It includes the News page and the Local Posts page.
----
 
 ## Future Improvements
 
