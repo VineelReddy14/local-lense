@@ -11,11 +11,11 @@ function Filterbar({ selectedCategory, onCategoryChange }) {
     <Box
       sx={{
         position: "fixed",
-        top: "64px",
+        top: "64px", // right below navbar
         left: 0,
         right: 0,
         zIndex: 1000,
-        backgroundColor: "white",
+        backgroundColor: "white", // ✅ match page background
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-start",
@@ -24,7 +24,7 @@ function Filterbar({ selectedCategory, onCategoryChange }) {
         borderBottom: "1px solid #ddd",
         overflowX: "auto",
         gap: "12px",
-        boxShadow: "0 1px 4px rgba(0, 0, 0, 0.05)", // Floating shadow
+        boxShadow: "0 1px 4px rgba(0, 0, 0, 0.05)",
         scrollbarWidth: "none",
         "&::-webkit-scrollbar": {
           display: "none"

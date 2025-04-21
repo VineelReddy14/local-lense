@@ -4,8 +4,9 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
-import { Link } from "react-router-dom";
-import logo from "../assets/logo.png"; 
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import logo from "../assets/logo.png";
 
 const Img = styled('img')({
   margin: 'auto',
@@ -17,50 +18,71 @@ const Img = styled('img')({
 });
 
 export default function PostCard({ image, category, title, brief_content, author, date }) {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Paper
       sx={{
         p: 2,
         margin: 'auto',
+        marginBottom: 2, // 🔧 Reduced from 3 to 2
         maxWidth: 1100,
-        minHeight: 150, 
-        width: "100%", 
-        flexGrow: 1,
+        width: "100%",
         backgroundColor: '#fff',
-        border: '1px solid #ddd'
+        border: '1px solid #ddd',
+        boxShadow: "0px 2px 5px rgba(0,0,0,0.05)",
+        borderRadius: "10px"
       }}
     >
-      <Grid container spacing={2}>
+      <Grid
+        container
+        spacing={2}
+        direction={isSmallScreen ? "column" : "row"}
+        alignItems="center"
+      >
         {/* Image Section */}
-        <Grid item>
-          <ButtonBase sx={{ width: 200, height: 150 }}>
+        <Grid item xs={12} sm={4} md={3}>
+          <ButtonBase sx={{ width: "100%", height: isSmallScreen ? 180 : 150 }}>
             <Img alt="news-thumbnail" src={image || logo} />
           </ButtonBase>
         </Grid>
 
         {/* Content Section */}
-        <Grid item xs={12} sm container>
-          <Grid item xs container direction="column" spacing={1}>
-            <Grid item xs>
-              {/* Category */}
-              <Typography variant="caption" color="text.secondary" fontWeight="bold" textTransform="uppercase">
+        <Grid item xs={12} sm={8} md={9} container>
+          <Grid item xs={12} container direction="column" spacing={1}>
+            <Grid item>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                fontWeight="bold"
+                textTransform="uppercase"
+              >
                 Topic: {category}
               </Typography>
 
-              {/* Title */}
               <Typography variant="h6" fontWeight="bold">
                 {title}
               </Typography>
 
-              {/* Content Brief */}
-              <Typography variant="body2" color="black.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'black',
+                  textAlign: 'justify'
+                }}
+              >
                 {brief_content}
               </Typography>
             </Grid>
 
-            {/* Author & Date */}
             <Grid item>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary'
+                }}
+              >
                 {author} | {date}
               </Typography>
             </Grid>

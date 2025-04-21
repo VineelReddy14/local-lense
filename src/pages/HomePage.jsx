@@ -29,13 +29,14 @@ function HomePage() {
       />
       <Box
         sx={{
-          marginTop: { xs: "130px", sm: "130px", md: "110px" }, // Navbar + Filterbar
-          paddingX: { xs: "10px", sm: "20px", md: "40px" },
-          paddingBottom: "30px",
-          backgroundColor: "#efefef",
-          minHeight: "100vh",
+            marginTop: { xs: "145px", sm: "145px", md: "135px" }, // Adjust spacing below navbar + filterbar
+            backgroundColor: "#efefef",
+            paddingX: { xs: "10px", sm: "20px", md: "40px" },
+            paddingBottom: "30px",
+            minHeight: "100vh",
         }}
-      >
+        >
+
         {filteredNews.map((article) => (
           <Link
             to={`/news/${article.id}`}
