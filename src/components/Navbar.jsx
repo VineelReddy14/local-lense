@@ -58,12 +58,12 @@ function Navbar() {
           flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "8px",
-          paddingX: { xs: "10px", sm: "20px" }
+          paddingX: { xs: "12px", sm: "24px" },
+          gap: "8px"
         }}
       >
-        {/* Left: Navigation buttons */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+        {/* Navigation buttons */}
+        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px" }}>
           <Button
             component={Link}
             to="/home"
@@ -71,8 +71,11 @@ function Navbar() {
               fontSize: { xs: "12px", sm: "14px" },
               paddingX: { xs: "8px", sm: "12px" },
               paddingY: "4px",
+              marginRight: "4px",
+              marginBottom: "4px",
               color: selectedPage === "News" ? 'white' : 'black',
-              backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
+              backgroundColor: selectedPage === "News" ? 'black' : 'transparent',
+              borderRadius: "8px"
             }}
           >
             News
@@ -85,15 +88,17 @@ function Navbar() {
               fontSize: { xs: "12px", sm: "14px" },
               paddingX: { xs: "8px", sm: "12px" },
               paddingY: "4px",
+              marginBottom: "4px",
               color: selectedPage === "Local-Posts" ? 'white' : 'black',
-              backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
+              backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent',
+              borderRadius: "8px"
             }}
           >
             Local-Posts
           </Button>
         </Box>
 
-        {/* Center: Logo and Title */}
+        {/* Logo and Title */}
         <Box
           sx={{
             display: "flex",
@@ -101,26 +106,29 @@ function Navbar() {
             gap: "8px",
             justifyContent: "center",
             flexGrow: 1,
+            flexShrink: 1,
+            minWidth: 0
           }}
         >
           <Link to="/home">
-            <img src="/logo.png" alt="Logo" style={{ height: '30px' }} />
+            <img src="/logo.png" alt="Logo" style={{ height: '28px' }} />
           </Link>
           <Typography
             variant="h6"
+            noWrap
             sx={{
               color: 'black',
-              fontWeight: 700,
-              fontSize: { xs: "16px", sm: "20px" }
+              fontWeight: 600,
+              fontSize: { xs: "15px", sm: "20px" }
             }}
           >
             Local Lense
           </Typography>
         </Box>
 
-        {/* Right: Profile avatar */}
+        {/* Avatar and menu */}
         {currentUser && (
-          <Box>
+          <Box sx={{ marginLeft: "auto", marginRight: "4px" }}>
             <Tooltip title="Account options">
               <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
                 <Avatar sx={{ bgcolor: "black", width: 32, height: 32 }}>
