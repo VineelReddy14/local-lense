@@ -24,11 +24,12 @@ export default function PostCard({ image, category, title, brief_content, author
   return (
     <Paper
       sx={{
-        p: 2,
-        margin: 'auto',
-        marginBottom: 2, // 🔧 Reduced from 3 to 2
-        maxWidth: 1100,
-        width: "100%",
+        px: 2,                         // horizontal padding inside the card
+        py: 2,                         // vertical padding
+        mx: { xs: "10px", sm: "auto" }, // side margin: 10px on mobile, auto-center on wider
+        mb: 2,                         // margin bottom between cards
+        width: "auto",                // allow spacing around it
+        maxWidth: "900px",
         backgroundColor: '#fff',
         border: '1px solid #ddd',
         boxShadow: "0px 2px 5px rgba(0,0,0,0.05)",
