@@ -58,14 +58,19 @@ function Navbar() {
           flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "8px"
+          gap: "8px",
+          paddingX: { xs: "10px", sm: "20px" }
         }}
       >
-        <Box sx={{ display: "flex", gap: "12px", alignItems: "center" }}>
+        {/* Left: Navigation buttons */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
           <Button
             component={Link}
             to="/home"
             sx={{
+              fontSize: { xs: "12px", sm: "14px" },
+              paddingX: { xs: "8px", sm: "12px" },
+              paddingY: "4px",
               color: selectedPage === "News" ? 'white' : 'black',
               backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
             }}
@@ -77,6 +82,9 @@ function Navbar() {
             component={Link}
             to="/local-posts"
             sx={{
+              fontSize: { xs: "12px", sm: "14px" },
+              paddingX: { xs: "8px", sm: "12px" },
+              paddingY: "4px",
               color: selectedPage === "Local-Posts" ? 'white' : 'black',
               backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
             }}
@@ -85,12 +93,19 @@ function Navbar() {
           </Button>
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <img
-            src="src/assets/logo.png"
-            alt="Logo"
-            style={{ height: '30px', marginRight: '6px' }}
-          />
+        {/* Center: Logo and Title */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            justifyContent: "center",
+            flexGrow: 1,
+          }}
+        >
+          <Link to="/home">
+            <img src="/logo.png" alt="Logo" style={{ height: '30px' }} />
+          </Link>
           <Typography
             variant="h6"
             sx={{
@@ -103,6 +118,7 @@ function Navbar() {
           </Typography>
         </Box>
 
+        {/* Right: Profile avatar */}
         {currentUser && (
           <Box>
             <Tooltip title="Account options">
