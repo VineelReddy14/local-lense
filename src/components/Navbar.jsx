@@ -54,16 +54,42 @@ function Navbar() {
       <Toolbar
         sx={{
           minHeight: "64px",
+          position: "relative",
           display: "flex",
-          flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingX: { xs: "12px", sm: "24px" },
-          gap: "8px"
+          paddingX: { xs: "12px", sm: "24px" }
         }}
       >
-        {/* Navigation buttons */}
-        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px" }}>
+        {/* Left: Logo and App Name (title hidden on mobile) */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <Link to="/home">
+            <img src="/logo.png" alt="Logo" style={{ height: '28px' }} />
+          </Link>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'black',
+              fontWeight: 600,
+              fontSize: { xs: "15px", sm: "17px", md: "20px" },
+              display: { xs: "none", md: "inline" }
+            }}
+          >
+            Local Lense
+          </Typography>
+        </Box>
+
+        {/* Center: Navigation Buttons */}
+        <Box
+          sx={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
           <Button
             component={Link}
             to="/home"
@@ -71,8 +97,6 @@ function Navbar() {
               fontSize: { xs: "12px", sm: "14px" },
               paddingX: { xs: "8px", sm: "12px" },
               paddingY: "4px",
-              marginRight: "4px",
-              marginBottom: "4px",
               color: selectedPage === "News" ? 'white' : 'black',
               backgroundColor: selectedPage === "News" ? 'black' : 'transparent',
               borderRadius: "8px"
@@ -88,7 +112,6 @@ function Navbar() {
               fontSize: { xs: "12px", sm: "14px" },
               paddingX: { xs: "8px", sm: "12px" },
               paddingY: "4px",
-              marginBottom: "4px",
               color: selectedPage === "Local-Posts" ? 'white' : 'black',
               backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent',
               borderRadius: "8px"
@@ -98,37 +121,9 @@ function Navbar() {
           </Button>
         </Box>
 
-        {/* Logo and Title */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            justifyContent: "center",
-            flexGrow: 1,
-            flexShrink: 1,
-            minWidth: 0
-          }}
-        >
-          <Link to="/home">
-            <img src="/logo.png" alt="Logo" style={{ height: '28px' }} />
-          </Link>
-          <Typography
-            variant="h6"
-            noWrap
-            sx={{
-              color: 'black',
-              fontWeight: 600,
-              fontSize: { xs: "15px", sm: "20px" }
-            }}
-          >
-            Local Lense
-          </Typography>
-        </Box>
-
-        {/* Avatar and menu */}
+        {/* Right: Avatar */}
         {currentUser && (
-          <Box sx={{ marginLeft: "auto", marginRight: "4px" }}>
+          <Box sx={{ marginLeft: "auto" }}>
             <Tooltip title="Account options">
               <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
                 <Avatar sx={{ bgcolor: "black", width: 32, height: 32 }}>
