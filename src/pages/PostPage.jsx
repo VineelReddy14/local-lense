@@ -216,7 +216,7 @@ function PostPage() {
         }}
       >
         <Box
-          paddingTop={{ xs: "20px", sm: "70px", md: "70px" }}
+          paddingTop={{ xs: "70px", sm: "70px", md: "70px" }}
           sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
         >
           <Box
