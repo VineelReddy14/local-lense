@@ -50,40 +50,61 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: 'white', minHeight: "40px" }} className="shadow-md">
-      <Toolbar className="flex items-center" sx={{ minHeight: "40px" }}>
-        <Button
-          component={Link}
-          to="/home"
-          sx={{
-            color: selectedPage === "News" ? 'white' : 'black',
-            backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
-          }}
-        >
-          News
-        </Button>
+    <AppBar position="fixed" sx={{ backgroundColor: 'white', minHeight: "64px" }} className="shadow-md">
+      <Toolbar
+        sx={{
+          minHeight: "64px",
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "8px"
+        }}
+      >
+        <Box sx={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <Button
+            component={Link}
+            to="/home"
+            sx={{
+              color: selectedPage === "News" ? 'white' : 'black',
+              backgroundColor: selectedPage === "News" ? 'black' : 'transparent'
+            }}
+          >
+            News
+          </Button>
 
-        <Button
-          component={Link}
-          to="/local-posts"
-          sx={{
-            color: selectedPage === "Local-Posts" ? 'white' : 'black',
-            backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
-          }}
-        >
-          Local-Posts
-        </Button>
+          <Button
+            component={Link}
+            to="/local-posts"
+            sx={{
+              color: selectedPage === "Local-Posts" ? 'white' : 'black',
+              backgroundColor: selectedPage === "Local-Posts" ? 'black' : 'transparent'
+            }}
+          >
+            Local-Posts
+          </Button>
+        </Box>
 
-        <Box sx={{ flexGrow: 1 }} />
-        <img src="src/assets/logo.png" alt="Logo" style={{ height: '40px', marginRight: '10px' }} />
-        <Typography variant="h5" sx={{ color: 'black' }} className="font-roboto font-bold">
-          Local Lense
-        </Typography>
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img
+            src="src/assets/logo.png"
+            alt="Logo"
+            style={{ height: '30px', marginRight: '6px' }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'black',
+              fontWeight: 700,
+              fontSize: { xs: "16px", sm: "20px" }
+            }}
+          >
+            Local Lense
+          </Typography>
+        </Box>
 
-        {/* Show account only if user is logged in */}
         {currentUser && (
-          <>
+          <Box>
             <Tooltip title="Account options">
               <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
                 <Avatar sx={{ bgcolor: "black", width: 32, height: 32 }}>
@@ -96,7 +117,6 @@ function Navbar() {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              {/*<MenuItem onClick={handleMenuClose} component={Link} to="/profile">Profile</MenuItem>*/}
               <MenuItem onClick={handleMenuClose} component={Link} to="/saved">Saved Posts</MenuItem>
               <MenuItem onClick={handleMenuClose} component={Link} to="/help">Help</MenuItem>
               <MenuItem
@@ -109,7 +129,7 @@ function Navbar() {
                 Logout
               </MenuItem>
             </Menu>
-          </>
+          </Box>
         )}
       </Toolbar>
     </AppBar>
