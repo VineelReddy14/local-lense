@@ -18,13 +18,16 @@ function Filterbar({ selectedCategory, onCategoryChange }) {
         backgroundColor: "white",
         display: "flex",
         alignItems: "center",
-        paddingX: "10px",
-        paddingY: "8px",
+        justifyContent: "flex-start",
+        paddingX: { xs: "8px", sm: "20px" },
+        paddingY: "10px",
         borderBottom: "1px solid #ddd",
         overflowX: "auto",
-        scrollbarWidth: "none", // Firefox
+        gap: "12px",
+        boxShadow: "0 1px 4px rgba(0, 0, 0, 0.05)", // Floating shadow
+        scrollbarWidth: "none",
         "&::-webkit-scrollbar": {
-          display: "none" // Chrome/Safari
+          display: "none"
         }
       }}
     >
@@ -33,18 +36,20 @@ function Filterbar({ selectedCategory, onCategoryChange }) {
           key={category}
           onClick={() => onCategoryChange(category)}
           sx={{
-            marginX: "6px",
-            color: selectedCategory === category ? "white" : "black",
-            backgroundColor: selectedCategory === category ? "black" : "transparent",
-            borderRadius: "20px",
-            paddingX: { xs: "12px", sm: "16px" },
-            paddingY: "6px",
-            fontSize: { xs: "12px", sm: "14px" },
+            flexShrink: 0,
+            fontSize: { xs: "13px", sm: "14px" },
             fontWeight: 600,
             textTransform: "none",
+            borderRadius: "20px",
+            paddingX: "16px",
+            paddingY: "6px",
             whiteSpace: "nowrap",
+            backgroundColor: selectedCategory === category ? "black" : "transparent",
+            color: selectedCategory === category ? "white" : "black",
+            transition: "all 0.2s ease",
             "&:hover": {
-              backgroundColor: selectedCategory === category ? "black" : "#eee",
+              backgroundColor: selectedCategory === category ? "black" : "#f0f0f0",
+              textDecoration: selectedCategory === category ? "none" : "underline"
             }
           }}
         >
