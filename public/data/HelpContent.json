@@ -1,0 +1,75 @@
+[
+    {
+      "section": "News",
+      "topics": [
+        {
+          "heading": "Overview of the News Page",
+          "body": "The News section provides a curated stream of local and regional articles based on your selected interests. You can explore trending news, read brief summaries, and click into full articles for more depth. Articles are tagged with categories such as Politics, Crime, Education, Weather, and more."
+        },
+        {
+          "heading": "Scrolling and Reading",
+          "body": "As you scroll down the News page, more stories automatically load to ensure a continuous reading experience. Each news card includes the title, summary, date, and author. Click on a card to view the full article."
+        },
+        {
+          "heading": "Personalized Feed",
+          "body": "The app customizes the articles you see based on your interests. You can adjust your preferences anytime under the 'Settings' menu to prioritize categories that matter to you most."
+        }
+      ]
+    },
+    {
+      "section": "Local Posts",
+      "topics": [
+        {
+          "heading": "Understanding the Local Posts Feature",
+          "body": "Local Posts allow users to share personal stories, events, observations, and updates happening in their neighborhoods. This encourages local engagement and helps build a stronger sense of community."
+        },
+        {
+          "heading": "Feed and Your Posts",
+          "body": "In the Feed tab, you can see what others in your area are posting. You can like, comment, or share these posts. The 'Your Posts' tab lets you view, edit, or delete your own submissions."
+        },
+        {
+          "heading": "Creating a Post",
+          "body": "To create a new post, tap the 'Create Post' button. You can write a message, choose a category (e.g., Environment, Education, Safety), and optionally upload an image. After submitting, your post appears in the community feed."
+        }
+      ]
+    },
+    {
+      "section": "User Interface",
+      "topics": [
+        {
+          "heading": "Navigation Menu",
+          "body": "The bottom navigation bar allows you to switch between the News Feed, Local Posts, Notifications, and Profile sections. Each icon is labeled for clarity."
+        },
+        {
+          "heading": "Header & Search",
+          "body": "At the top of each page, you’ll find a search bar and sometimes filters depending on the screen. This helps you quickly locate articles, posts, or categories of interest."
+        }
+      ]
+    },
+    {
+      "section": "Content Categories",
+      "topics": [
+        {
+          "heading": "Using Categories",
+          "body": "Both news articles and user posts are categorized by topic. Categories help organize information and make it easier for users to explore topics they care about."
+        },
+        {
+          "heading": "Popular Categories",
+          "body": "Some of the most active categories include Environment, Crime, Education, Entertainment, Politics, Health, and Weather. You can explore each one through the tabs or filters."
+        }
+      ]
+    },
+    {
+      "section": "Settings & Customization",
+      "topics": [
+        {
+          "heading": "Adjusting Preferences",
+          "body": "Visit the Settings page to manage your interests, change display preferences, and modify notification settings. This ensures your app experience aligns with your personal needs."
+        },
+        {
+          "heading": "Managing Your Account",
+          "body": "From the Profile tab, you can edit your user info, view saved posts, and access your account settings. You can also sign out or delete your account from here."
+        }
+      ]
+    }
+  ]  

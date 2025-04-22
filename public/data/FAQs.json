@@ -1,0 +1,43 @@
+[
+    {
+      "question": "What is Local Lense?",
+      "answer": "Local Lense is a community-based news app that helps you discover and share hyperlocal content, updates, and events happening around you."
+    },
+    {
+      "question": "How do I create a new post?",
+      "answer": "Tap the '+' button on the home screen or in the 'Feed' section, enter your post details, and hit 'Submit'. You can also choose a category and add images."
+    },
+    {
+      "question": "Can I edit or delete my posts?",
+      "answer": "Yes, go to your profile, select the post you want to edit or delete, and choose the appropriate option from the menu."
+    },
+    {
+      "question": "Why can't I see some posts?",
+      "answer": "Posts are shown based on your selected preferences, location, and following history. Try adjusting your feed settings or explore other categories."
+    },
+    {
+      "question": "Is my location shared with other users?",
+      "answer": "No, your precise location is never shared with other users. It is only used to personalize your feed and improve content relevance."
+    },
+    {
+      "question": "How can I report inappropriate content?",
+      "answer": "Tap the three dots on any post and select 'Report'. Our moderation team will review the post promptly."
+    },
+    {
+      "question": "Can I follow other users?",
+      "answer": "Yes, you can follow users by visiting their profile and tapping the 'Follow' button. Their public posts will then appear more often in your feed."
+    },
+    {
+      "question": "Is Local Lense free to use?",
+      "answer": "Yes, Local Lense is completely free to download and use. We may offer optional premium features in the future."
+    },
+    {
+      "question": "How do I reset my password?",
+      "answer": "On the login screen, tap 'Forgot Password' and follow the instructions sent to your registered email."
+    },
+    {
+      "question": "Can I change my preferred news categories?",
+      "answer": "Absolutely. Go to Settings > Preferences and update your preferred categories anytime."
+    }
+  ]
+  

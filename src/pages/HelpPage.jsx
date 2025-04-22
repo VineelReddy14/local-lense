@@ -1,30 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  AppBar,
-  Toolbar,
-  Button,
-  Typography,
-  IconButton,
+  Tabs,
+  Tab,
   Box,
+  Typography,
   Divider,
   Tooltip,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Navbar from "../components/Navbar";
 
 const HelpPage = () => {
   const navigate = useNavigate();
+  const [tabIndex, setTabIndex] = useState(0);
+  const [faqs, setFaqs] = useState([]);
+  const [helpContent, setHelpContent] = useState([]);
+  const [expandedTopics, setExpandedTopics] = useState({});
 
-  const handleBack = () => {
-    navigate(-1);
+  useEffect(() => {
+    fetch("/data/FAQs.json")
+      .then((res) => res.json())
+      .then((data) => setFaqs(data))
+      .catch((err) => console.error("Failed to load FAQs:", err));
+
+    fetch("/data/HelpContent.json")
+      .then((res) => res.json())
+      .then((data) => setHelpContent(data))
+      .catch((err) => console.error("Failed to load Help content:", err));
+  }, []);
+
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
+  const handleTopicToggle = (sectionIndex, topicIndex) => {
+    const key = `${sectionIndex}-${topicIndex}`;
+    setExpandedTopics((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   return (
     <div>
-      < Navbar />
-      {/* Help Section Content */}
+      <Navbar />
+
       <Box sx={{ mt: 10, px: 3, display: "flex", justifyContent: "center" }}>
         <Box
           sx={{
@@ -55,38 +76,65 @@ const HelpPage = () => {
             </Tooltip>
           </Box>
 
-          {/* Help Sections */}
+          {/* Tabs */}
+          <Tabs value={tabIndex} onChange={handleTabChange} centered>
+            <Tab label="Help Info" />
+            <Tab label="FAQs" />
+          </Tabs>
+
+          {/* Tab Panels */}
           <Box sx={{ px: 3, py: 2 }}>
-            {/* News Section */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                News
-              </Typography>
-              <Typography variant="body2">
-                This page has a list of news articles on different topics. You
-                can scroll down to see more articles as you go. Each article has
-                a short summary to give you an idea of what it’s about. If you
-                want to read the full story, just click on the article. Stay
-                updated with the latest news and interesting stories!
-              </Typography>
-            </Box>
+            {tabIndex === 0 && (
+              <Box>
+                {helpContent.map((section, sectionIndex) => (
+                  <Box key={sectionIndex} sx={{ mb: 4 }}>
+                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                      {section.section}
+                    </Typography>
+                    {section.topics.map((topic, topicIndex) => {
+                      const key = `${sectionIndex}-${topicIndex}`;
+                      const isExpanded = expandedTopics[key] || false;
+                      return (
+                        <Box key={topicIndex} sx={{ mb: 2 }}>
+                          <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            sx={{ cursor: "pointer", color: "#1976d2" }}
+                            onClick={() => handleTopicToggle(sectionIndex, topicIndex)}
+                          >
+                            {topic.heading}
+                          </Typography>
+                          {isExpanded && (
+                            <Typography variant="body2" sx={{ ml: 2, mt: 0.5 }}>
+                              {topic.body}
+                            </Typography>
+                          )}
+                        </Box>
+                      );
+                    })}
+                    {sectionIndex !== helpContent.length - 1 && <Divider sx={{ my: 2 }} />}
+                  </Box>
+                ))}
+              </Box>
+            )}
 
-            <Divider />
-
-            {/* Local Posts Section */}
-            <Box sx={{ mt: 3, mb: 2 }}>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                Local Posts
-              </Typography>
-              <Typography variant="body2">
-                This page has two components, “feed” and “your posts”. In the
-                feed page, you can view others’ posts, like, share, comment and
-                share the posts. In the “your posts” section, you can see the
-                posts you uploaded and you also have the option to upload a new
-                post. Just click on the “create a post” button to do so. You
-                will have the chance to edit and delete your own post as well.
-              </Typography>
-            </Box>
+            {tabIndex === 1 && (
+              <Box>
+                <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                  Frequently Asked Questions
+                </Typography>
+                {faqs.map((faq, index) => (
+                  <Box key={index} sx={{ mb: 2 }}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Q{index + 1}: {faq.question}
+                    </Typography>
+                    <Typography variant="body2" sx={{ ml: 2 }}>
+                      {faq.answer}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>
